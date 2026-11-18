@@ -1,4 +1,5 @@
 ---
+import { BRAND_ICON_SRC } from '@/data/brand'
 import { getMessages } from '@/i18n'
 import { localePath, type Locale } from '@/i18n/locale'
 
@@ -12,86 +13,201 @@ const m = getMessages(locale)
 const prefix = locale === 'en' ? '/en' : ''
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/80 backdrop-blur-md">
-  <div class="container-x flex h-20 items-center justify-between md:h-24">
+<header class="site-header fixed inset-x-0 top-0 z-50" data-scrolled="false" id="site-header">
+  <div class="container-premium flex h-20 items-center justify-center md:h-24">
     <a
       href={prefix || '/'}
-      class="flex items-center gap-3 group"
+      class="z-10 flex items-center gap-2 group sm:gap-3 md:gap-4"
       aria-label={m.nav.home}
     >
       <img
-        src="/logo-mark.svg"
+        src={BRAND_ICON_SRC}
         alt=""
-        width="44"
-        height="44"
-        class="h-9 w-9 object-contain md:h-11 md:w-11"
+        aria-hidden
+        class="h-8 w-8 object-contain sm:h-9 sm:w-9 md:h-11 md:w-11"
+        data-header-logo
+        decoding="async"
       />
-      <span class="brand-title text-xs text-gold-slide group-hover:opacity-80 md:text-sm">
-        <span class="block sm:inline">GastroMenu</span>
+      <span
+        class="brand-title text-center text-[clamp(0.66rem,3.15vw,0.84rem)] leading-[1.15] tracking-[0.14em] text-gold-slide transition-all duration-500 ease-premium group-hover:opacity-80 sm:text-left sm:text-xs sm:leading-none md:text-sm"
+        data-header-title
+      >
+        <span class="block whitespace-nowrap sm:inline">GastroMenu</span>
         <span class="hidden sm:inline"> </span>
-        <span class="block sm:inline">Premium</span>
+        <span class="block whitespace-nowrap sm:inline">Premium</span>
       </span>
     </a>
-
-    <nav class="hidden items-center gap-6 lg:flex" aria-label={m.nav.primary}>
-      {
-        m.nav.links.map((link) => (
-          <a
-            href={`${prefix}${link.to}`}
-            class="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-cream/80 hover:text-gold-slide"
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-1 font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em]" aria-label={m.language.label}>
-        <a
-          href={localePath('es', path)}
-          class:list={['px-1.5 py-1', locale === 'es' ? 'text-gold-slide' : 'text-cream/50 hover:text-gold-slide']}
-          hreflang="es"
-          lang="es"
-        >
-          ES
-        </a>
-        <span class="text-cream/30" aria-hidden>/</span>
-        <a
-          href={localePath('en', path)}
-          class:list={['px-1.5 py-1', locale === 'en' ? 'text-gold-slide' : 'text-cream/50 hover:text-gold-slide']}
-          hreflang="en"
-          lang="en"
-        >
-          EN
-        </a>
-      </div>
-
-      <details class="relative lg:hidden">
-        <summary
-          class="cursor-pointer list-none p-2 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-gold-slide"
-        >
-          {locale === 'en' ? 'Menu' : 'Menú'}
-        </summary>
-        <div
-          class="absolute right-0 mt-3 w-56 rounded-sm border border-gold-slide/20 bg-ink-soft p-4 shadow-xl"
-        >
-          <ul class="space-y-3">
-            {
-              m.nav.links.map((link) => (
-                <li>
-                  <a
-                    href={`${prefix}${link.to}`}
-                    class="block font-[family-name:var(--font-label)] text-xs uppercase tracking-[0.16em] text-cream hover:text-gold-slide"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </details>
-    </div>
   </div>
 </header>
+
+<div
+  class="fixed top-5 left-5 z-[70] flex items-center gap-2 p-2.5 transition-opacity duration-300 ease-premium md:top-7 md:left-10"
+  role="group"
+  aria-label={m.language.label}
+  data-header-langs
+>
+  <a
+    href={localePath('es', path)}
+    lang="es"
+    hreflang="es"
+    aria-label={m.language.es}
+    aria-current={locale === 'es' ? 'true' : undefined}
+    class:list={[
+      'relative block transition-opacity duration-400 ease-premium',
+      locale === 'es' ? 'opacity-100 after:absolute after:inset-x-0 after:-bottom-1.5 after:h-px after:bg-gold-slide' : 'opacity-55 hover:opacity-80',
+    ]}
+  >
+    <svg viewBox="0 0 30 20" aria-hidden class="lang-flag block h-3.5 w-[1.3rem]">
+      <rect width="30" height="20" fill="#7a3b22"></rect>
+      <rect y="5" width="30" height="10" fill="#e2c48a"></rect>
+    </svg>
+  </a>
+  <span aria-hidden class="h-3.5 w-px bg-cream/35"></span>
+  <a
+    href={localePath('en', path)}
+    lang="en"
+    hreflang="en"
+    aria-label={m.language.en}
+    aria-current={locale === 'en' ? 'true' : undefined}
+    class:list={[
+      'relative block transition-opacity duration-400 ease-premium',
+      locale === 'en' ? 'opacity-100 after:absolute after:inset-x-0 after:-bottom-1.5 after:h-px after:bg-gold-slide' : 'opacity-55 hover:opacity-80',
+    ]}
+  >
+    <svg viewBox="0 0 30 20" aria-hidden class="lang-flag block h-3.5 w-[1.3rem]">
+      <rect width="30" height="20" fill="#012169"></rect>
+      <path d="M0 0 L30 20 M30 0 L0 20" stroke="#fff" stroke-width="4"></path>
+      <path d="M0 0 L30 20 M30 0 L0 20" stroke="#C8102E" stroke-width="2"></path>
+      <path d="M15 0 V20 M0 10 H30" stroke="#fff" stroke-width="6"></path>
+      <path d="M15 0 V20 M0 10 H30" stroke="#C8102E" stroke-width="3"></path>
+    </svg>
+  </a>
+</div>
+
+<button
+  type="button"
+  id="nav-toggle"
+  class="nav-toggle fixed top-5 right-5 z-[70] cursor-pointer p-2.5 text-gold-slide transition-colors duration-500 ease-premium hover:opacity-80 sm:right-8 md:top-7 md:right-10"
+  data-open="false"
+  aria-expanded="false"
+  aria-controls="site-menu"
+  aria-label={m.nav.open}
+>
+  <span class="nav-toggle__bars" aria-hidden>
+    <span class="nav-toggle__bar nav-toggle__bar--top"><span></span></span>
+    <span class="nav-toggle__bar nav-toggle__bar--mid"></span>
+    <span class="nav-toggle__bar nav-toggle__bar--bot"><span></span></span>
+  </span>
+</button>
+
+<div class="site-drawer-root" data-open="false" id="site-drawer-root" inert>
+  <div class="site-drawer-backdrop" id="site-drawer-backdrop"></div>
+  <nav id="site-menu" class="site-drawer" aria-label={m.nav.primary}>
+    <div class="site-drawer-sheet">
+      <div class="site-drawer-head">
+        <a href={prefix || '/'} class="site-drawer-brand">
+          <img
+            src={BRAND_ICON_SRC}
+            alt=""
+            aria-hidden
+            class="h-8 w-8 object-contain sm:h-9 sm:w-9 md:h-12 md:w-12"
+            decoding="async"
+          />
+          <span class="brand-title text-xs tracking-[0.14em] text-gold-dark sm:text-sm"
+            >GastroMenu Premium</span
+          >
+        </a>
+      </div>
+      <ul>
+        {
+          m.nav.links.map((link, index) => (
+            <li class="site-drawer-link" style={`transition-delay: ${520 + index * 48}ms`}>
+              <a
+                href={`${prefix}${link.to}`}
+                class:list={['site-drawer-anchor', path === link.to && 'is-active']}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="site-drawer-foot">
+        <a href={`${prefix}/contacto#formulario`} class="site-drawer-cta">{m.nav.contact}</a>
+        <p class="site-drawer-note">{m.nav.note}</p>
+      </div>
+    </div>
+    <div class="site-drawer-shade" aria-hidden></div>
+  </nav>
+</div>
+
+<script define:vars={{ openLabel: m.nav.open, closeLabel: m.nav.close }}>
+  const header = document.getElementById('site-header')
+  const logo = document.querySelector('[data-header-logo]')
+  const title = document.querySelector('[data-header-title]')
+  const langs = document.querySelector('[data-header-langs]')
+  const toggle = document.getElementById('nav-toggle')
+  const drawer = document.getElementById('site-drawer-root')
+  const backdrop = document.getElementById('site-drawer-backdrop')
+  if (!header || !toggle || !drawer) throw new Error('header missing')
+
+  let open = false
+  let langsVisible = true
+
+  function setScrolled(scrolled) {
+    header.setAttribute('data-scrolled', scrolled ? 'true' : 'false')
+    if (logo) logo.classList.toggle('brightness-0', scrolled)
+    if (logo) logo.classList.toggle('invert', scrolled)
+    if (title) {
+      title.classList.toggle('text-white', scrolled)
+      title.classList.toggle('text-gold-slide', !scrolled)
+    }
+    if (!open) {
+      toggle.classList.toggle('text-white', scrolled)
+      toggle.classList.toggle('text-gold-slide', !scrolled)
+    }
+  }
+
+  function onScroll() {
+    setScrolled(window.scrollY > 12)
+  }
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  function setOpen(next) {
+    open = next
+    drawer.setAttribute('data-open', open ? 'true' : 'false')
+    toggle.setAttribute('data-open', open ? 'true' : 'false')
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+    toggle.setAttribute('aria-label', open ? closeLabel : openLabel)
+    toggle.classList.toggle('text-ink', open)
+    if (open) {
+      toggle.classList.remove('text-white', 'text-gold-slide')
+      document.body.style.overflow = 'hidden'
+      drawer.removeAttribute('inert')
+      if (langs) {
+        langsVisible = false
+        langs.classList.add('max-md:pointer-events-none', 'max-md:opacity-0')
+      }
+    } else {
+      document.body.style.overflow = ''
+      drawer.setAttribute('inert', '')
+      setScrolled(window.scrollY > 12)
+      window.setTimeout(() => {
+        if (langs && !open) {
+          langsVisible = true
+          langs.classList.remove('max-md:pointer-events-none', 'max-md:opacity-0')
+        }
+      }, 720)
+    }
+  }
+
+  toggle.addEventListener('click', () => setOpen(!open))
+  backdrop?.addEventListener('click', () => setOpen(false))
+  drawer.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setOpen(false))
+  })
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && open) setOpen(false)
+  })
+</script>

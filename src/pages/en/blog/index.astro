@@ -1,0 +1,63 @@
+---
+import ContactCTA from '@/components/ContactCTA.astro'
+import Layout from '@/layouts/Layout.astro'
+import { blogPage } from '@/data/dossier/blog'
+import { localizeDossier } from '@/data/dossier/en'
+import { dossierImageUrl } from '@/data/dossierTypes'
+import { getMessages } from '@/i18n'
+
+const locale = 'en' as const
+const content = localizeDossier(blogPage, locale)
+const m = getMessages(locale)
+---
+
+<Layout title={content.seoTitle} description={content.seoDescription} path={content.path} locale={locale}>
+  <section class="bg-ink text-cream">
+    <div class="container-premium py-12 md:py-16">
+      <p class="slide-label mb-6">{content.kicker}</p>
+      <h1 class="slide-heading max-w-4xl text-4xl text-cream md:text-6xl">
+        {content.title}
+        {content.emphasis && <span class="gold-text"> {content.emphasis}</span>}
+      </h1>
+      <div class="brand-divider !mx-0 mt-8 mb-6 max-w-[8rem]"></div>
+      <p class="slide-body max-w-3xl text-lg md:text-xl">{content.lead}</p>
+    </div>
+  </section>
+
+  <section class="bg-beige-50 py-14 text-ink md:py-20" aria-label={m.blog.topics}>
+    <div class="container-premium grid gap-8 md:grid-cols-2 lg:gap-10">
+      {
+        content.sections.map((topic) => {
+          const image = topic.images[0]
+          const title = [topic.title, topic.emphasis].filter(Boolean).join(' ')
+          return (
+            <article class="flex h-full flex-col overflow-hidden bg-white/60">
+              <a href={`/en/blog/${topic.id}`} class="group flex h-full flex-col">
+                {image && (
+                  <div class="aspect-[16/10] overflow-hidden bg-ink-muted">
+                    <img
+                      src={dossierImageUrl(image)}
+                      alt={image.caption}
+                      class="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-premium)] group-hover:scale-[1.04]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                )}
+                <div class="flex flex-1 flex-col p-6">
+                  <p class="slide-label mb-3 text-gold-dark">{topic.kicker}</p>
+                  <h2 class="slide-heading mb-3 text-2xl group-hover:text-gold-dark">{title}</h2>
+                  <p class="slide-body flex-1 text-base text-slate">{topic.paragraphs[0]}</p>
+                  <span class="mt-4 font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-gold-dark">
+                    {m.blog.read}
+                  </span>
+                </div>
+              </a>
+            </article>
+          )
+        })
+      }
+    </div>
+  </section>
+  <ContactCTA locale={locale} />
+</Layout>

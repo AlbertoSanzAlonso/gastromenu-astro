@@ -1,0 +1,166 @@
+---
+import ContactCTA from '@/components/ContactCTA.astro'
+import HeroSection from '@/components/HeroSection.astro'
+import Heading from '@/components/ui/Heading.astro'
+import Section from '@/components/ui/Section.astro'
+import { ABOUT_SECTION_WATERMARK_SRC } from '@/data/brand'
+import { collections } from '@/lib/nav'
+import { getMessages } from '@/i18n'
+import type { Locale } from '@/i18n/locale'
+import Layout from '@/layouts/Layout.astro'
+import { homeSeo } from '@/lib/seo/site'
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const aboutParagraphs = m.site.about.split('\n\n')
+const prefix = locale === 'en' ? '/en' : ''
+const title = locale === 'en' ? 'GastroMenu Premium — Artisan menus' : homeSeo.title
+const description =
+  locale === 'en'
+    ? 'Artisan menus, placemats and menu stands. Made in-house since 1998.'
+    : homeSeo.description
+---
+
+<Layout title={title} description={description} path="/" locale={locale}>
+  <HeroSection locale={locale} />
+
+  <div class="relative z-10">
+    <Section id="coleccion" variant="beige" ariaLabel={m.home.collectionsLabel}>
+      <Heading as="h2" subtitle={m.home.collectionsSubtitle} align="center" class="mx-auto">
+        {m.home.collectionsTitleBefore}{' '}
+        <span class="slide-accent">{m.home.collectionsTitleAccent}</span>
+      </Heading>
+
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
+        {
+          collections.map((item, index) => (
+            <a href={`${prefix}${item.href}`} class="block min-h-[240px] cursor-pointer">
+              <article class="group relative h-full w-full min-h-[220px] overflow-hidden bg-ink-muted transition-transform duration-600 ease-premium sm:min-h-[260px] lg:min-h-[340px]">
+                <div class="absolute inset-0">
+                  <img
+                    src={item.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    class="h-full w-full object-cover transition-transform duration-700 ease-premium group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5 transition-opacity duration-500 group-hover:from-black/90 group-hover:via-black/45"
+                  aria-hidden
+                />
+                <div class="pointer-events-none absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-8 lg:p-10">
+                  <h3 class="slide-heading text-2xl !text-gold-slide leading-tight sm:text-3xl md:text-4xl lg:text-[2.75rem]">
+                    {m.home.collectionCards[index]?.title ?? item.label}
+                  </h3>
+                  <p class="mt-2 max-w-md font-label text-sm font-normal normal-case tracking-normal !text-gold-light leading-relaxed md:text-base">
+                    {m.home.collectionCards[index]?.description}
+                  </p>
+                </div>
+              </article>
+            </a>
+          ))
+        }
+      </div>
+
+      <nav aria-label={m.home.sectors} class="mt-12 flex flex-wrap justify-center gap-3">
+        {
+          m.home.sectorLinks.map((sector) => (
+            <a
+              href={`${prefix}${sector.to}`}
+              class="slide-label border border-gold-slide/30 px-4 py-2 transition-colors duration-400 hover:border-gold-slide hover:text-gold-dark"
+            >
+              {sector.label}
+            </a>
+          ))
+        }
+      </nav>
+    </Section>
+
+    <section
+      id="nosotros"
+      aria-label={m.home.aboutLabel}
+      class="section-padding relative overflow-hidden bg-ink text-cream [&_.slide-heading]:text-cream [&_.slide-body]:text-cream-muted"
+    >
+      <div
+        aria-hidden
+        class="about-section__visual"
+        style={`background-image: url(${ABOUT_SECTION_WATERMARK_SRC})`}
+      >
+      </div>
+      <div aria-hidden class="section-watermark-overlay section-watermark-overlay--about"></div>
+
+      <div class="container-premium relative z-[2]">
+        <div class="grid items-start gap-16 lg:grid-cols-2 lg:gap-24">
+          <div>
+            <Heading as="h2" subtitle={m.home.aboutSubtitle}>
+              {m.home.aboutTitleBefore}{' '}
+              <span class="slide-accent">{m.home.aboutTitleAccent}</span>
+            </Heading>
+
+            <blockquote class="relative mb-8 max-w-xl border-l border-gold-slide/40 pl-6 slide-body text-xl md:text-2xl">
+              <span class="slide-accent absolute -top-2 -left-1 text-4xl leading-none" aria-hidden>"</span>
+              {m.home.aboutQuote}
+            </blockquote>
+
+            <div class="slide-body max-w-xl space-y-6">
+              {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          </div>
+
+          <div class="space-y-6 lg:pt-8">
+            {
+              m.home.values.map((value, index) => (
+                <article class="slide-frame bg-ink-soft/35 px-8 py-6">
+                  <span class="slide-label text-[10px]">0{index + 1}</span>
+                  <h3 class="slide-heading mt-3 mb-3 text-xl">{value.title}</h3>
+                  <p class="slide-body text-base">{value.description}</p>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Section variant="light" ariaLabel={m.home.teamLabel}>
+      <Heading as="h2" subtitle={m.home.teamSubtitle} align="center" class="mx-auto">
+        {m.home.teamTitleBefore}{' '}
+        <span class="slide-accent">{m.home.teamTitleAccent}</span>
+      </Heading>
+
+      <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+        {
+          m.home.teamMembers.map((member, index) => (
+            <article class="group w-full max-w-sm border border-beige-300/70 bg-transparent p-8 text-center transition-colors duration-400 hover:border-gold-slide/50 sm:w-[calc(50%-1rem)] md:p-10 lg:w-[calc(33.333%-2rem)]">
+              <div class="mb-6 flex flex-col items-center gap-4">
+                <span
+                  class="font-serif text-5xl font-light leading-none text-gold-slide tabular-nums md:text-6xl"
+                  aria-hidden
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div class="flex flex-col items-center gap-3">
+                  <div class="flex w-20 items-center gap-3" aria-hidden>
+                    <span class="h-px flex-1 bg-gold-slide/35 transition-colors duration-400 group-hover:bg-gold-slide/55" />
+                    <span class="h-1.5 w-1.5 rotate-45 bg-gold-slide/60 transition-colors duration-400 group-hover:bg-gold-slide" />
+                    <span class="h-px flex-1 bg-gold-slide/35 transition-colors duration-400 group-hover:bg-gold-slide/55" />
+                  </div>
+                  <p class="slide-label text-[10px]">{m.home.teamSteps[index]}</p>
+                </div>
+              </div>
+              <h3 class="slide-heading mb-3 text-lg">{member.title}</h3>
+              {member.description && <p class="slide-body text-sm">{member.description}</p>}
+            </article>
+          ))
+        }
+      </div>
+    </Section>
+
+    <ContactCTA locale={locale} />
+  </div>
+</Layout>

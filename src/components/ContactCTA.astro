@@ -1,40 +1,49 @@
 ---
+import BrandDivider from '@/components/ui/BrandDivider.astro'
+import Section from '@/components/ui/Section.astro'
 import { company } from '@/data/contact'
 import { getMessages } from '@/i18n'
-import { type Locale } from '@/i18n/locale'
+import type { Locale } from '@/i18n/locale'
 
 interface Props {
   locale?: Locale
+  fadeTop?: boolean
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = 'es', fadeTop = false } = Astro.props
 const m = getMessages(locale)
 const prefix = locale === 'en' ? '/en' : ''
-const phone = company.phones[0]
 ---
 
-<section class="border-t border-white/5 bg-ink py-16 md:py-24" aria-label={m.home.ctaLabel}>
-  <div class="container-x max-w-3xl text-center">
-    <p class="slide-label mb-4">{m.home.ctaKicker}</p>
-    <h2 class="slide-heading mb-6 text-3xl text-cream md:text-5xl">
+<Section
+  variant="beige"
+  ariaLabel={m.home.ctaLabel}
+  edgeFade={fadeTop ? 'top' : undefined}
+>
+  <div class="mx-auto max-w-3xl text-center">
+    <BrandDivider class="mb-8" />
+    <p class="slide-label mb-8">{m.home.ctaKicker}</p>
+    <h2 class="slide-heading mb-8 text-balance text-3xl md:text-4xl">
       {m.home.ctaTitleBefore}{' '}
-      <span class="gold-text">{m.home.ctaTitleAccent}</span>?
+      <span class="slide-accent">{m.home.ctaTitleAccent}</span>?
     </h2>
-    <div class="brand-divider mb-6"></div>
-    <p class="slide-body mb-10 text-lg">{m.home.ctaBody}</p>
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <a
-        href={`${prefix}/contacto#formulario`}
-        class="inline-flex bg-gold-slide px-6 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.2em] text-ink hover:bg-gold-highlight"
+    <p class="slide-body mx-auto mb-12 max-w-2xl">{m.home.ctaBody}</p>
+    <a href={`${prefix}/contacto`} class="group inline-block cursor-pointer">
+      <span
+        class="inline-flex items-center justify-center border border-ink bg-ink px-10 py-4 font-label text-base font-medium uppercase tracking-[0.25em] text-cream transition-all duration-400 ease-premium hover:scale-[1.04] hover:border-gold-slide hover:bg-charcoal hover:text-cream hover:shadow-lg hover:shadow-gold-slide/30 group-hover:tracking-[0.3em] active:scale-[0.98]"
       >
         {m.home.ctaButton}
-      </a>
+      </span>
+    </a>
+    <p class="slide-body mt-8">
+      {m.contact.call}:{' '}
       <a
-        href={`tel:${phone.tel}`}
-        class="inline-flex border border-cream/40 px-6 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.2em] text-cream hover:border-gold-slide hover:text-gold-slide"
+        href={`tel:${company.phones[0].tel}`}
+        class="text-gold-dark transition-colors hover:text-gold-slide"
       >
-        {phone.display}
+        {company.phones[0].display}
       </a>
-    </div>
+    </p>
+    <p class="slide-accent mt-12 text-2xl md:text-3xl">{m.footer.motto}</p>
   </div>
-</section>
+</Section>

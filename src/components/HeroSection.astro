@@ -1,0 +1,304 @@
+---
+import BrandDivider from '@/components/ui/BrandDivider.astro'
+import { buildHeroSlides } from '@/data/heroSlides'
+import { getMessages } from '@/i18n'
+import type { Locale } from '@/i18n/locale'
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const prefix = locale === 'en' ? '/en' : ''
+const slides = buildHeroSlides(m.hero.slides).map((slide, index) =>
+  index === 0
+    ? {
+        ...slide,
+        alt: m.hero.coverAlt,
+        label: m.hero.coverLabel,
+        title: m.site.heroTitle,
+        quote: m.site.heroQuote,
+      }
+    : slide,
+)
+const HERO_TEXTURE = '/images/hero-texture.webp'
+---
+
+<section
+  id="hero-stage"
+  aria-roledescription={m.hero.carousel}
+  aria-label={m.hero.presentation}
+  data-paused="false"
+  class="hero-stage relative z-20 flex h-[calc(100svh-5rem)] min-h-[34rem] items-center overflow-hidden bg-black touch-pan-y md:h-[calc(100svh-6rem)]"
+>
+  <div id="hero-texture-left" class="absolute inset-y-0 left-0 z-0 hidden w-1/2 lg:block" aria-hidden style="opacity:1">
+    <img
+      src={HERO_TEXTURE}
+      alt=""
+      class="h-full w-full scale-x-[-1] object-cover object-right [mask-image:linear-gradient(to_left,black_0%,black_45%,transparent_100%)]"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+  </div>
+  <div id="hero-texture-right" class="absolute inset-y-0 left-1/2 z-0 hidden w-1/2 lg:block" aria-hidden style="opacity:0">
+    <img
+      src={HERO_TEXTURE}
+      alt=""
+      class="h-full w-full object-cover object-left [mask-image:linear-gradient(to_right,transparent_0%,black_55%,black_100%)]"
+      loading="eager"
+      decoding="async"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25"></div>
+    <div class="absolute inset-0 bg-gradient-to-l from-black/30 to-transparent"></div>
+  </div>
+
+  <div
+    id="hero-media"
+    class="absolute inset-0 z-[2] overflow-hidden transition-transform duration-[1600ms] ease-in-out lg:inset-y-0 lg:left-0 lg:w-1/2 lg:translate-x-full"
+    aria-hidden
+  >
+    {
+      slides.map((item, position) => (
+        <div
+          class="hero-slide-frame absolute inset-0"
+          data-hero-frame
+          data-index={position}
+          data-fit={item.fit ?? 'cover'}
+          style={`opacity:${position === 0 ? '1' : '0'}; z-index:${position === 0 ? '2' : '1'}; --hero-x: ${position === 0 ? '0%' : `${position * 6}%`};`}
+        >
+          <img
+            src={item.image}
+            alt=""
+            data-hero-img
+            class:list={[
+              'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
+              item.fit === 'contain' ? 'hero-carta lg:object-contain' : 'lg:object-cover scale-[1.14]',
+              position === 0 && item.fit !== 'contain' && 'hero-drift',
+              position === 0 && item.fit === 'contain' && 'hero-float',
+            ]}
+            loading={position === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  <div
+    class="pointer-events-none absolute inset-0 z-[1] lg:bg-gradient-to-b lg:from-transparent lg:via-black/10 lg:to-black/35"
+    aria-hidden
+  >
+  </div>
+  <div class="hero-mobile-scrim pointer-events-none absolute inset-0 z-[1]" aria-hidden></div>
+
+  <div class="container-premium relative z-10 w-full py-12 md:py-16">
+    <div class="hero-mobile-copy mx-auto min-h-[28rem] max-w-3xl text-center md:min-h-[32rem] lg:hidden">
+      <h1 class="brand-title gold-shimmer mb-8 text-3xl sm:text-4xl md:text-5xl">GastroMenu Premium</h1>
+      <BrandDivider class="mb-8" />
+      <div id="hero-copy-mobile" class="hero-copy">
+        <p class="brand-eyebrow mb-6 text-[11px] md:text-xs" data-hero-label>{slides[0].label}</p>
+        <p
+          class="slide-heading mb-6 text-4xl !leading-[1.05] text-cream md:text-5xl whitespace-pre-line"
+          data-hero-title
+        >
+          {slides[0].title}
+        </p>
+        <p class="slide-body mb-8 text-lg italic leading-relaxed text-cream" data-hero-quote>
+          «{slides[0].quote}»
+        </p>
+      </div>
+      <p class="brand-caption">{m.hero.since}</p>
+    </div>
+
+    <div
+      id="hero-copy-desktop-wrap"
+      class="hidden max-w-5xl transition-transform duration-[1600ms] ease-in-out lg:block lg:min-h-[24rem] lg:max-w-[50%] lg:translate-x-0 lg:text-left"
+    >
+      <div id="hero-copy-desktop" class="hero-copy">
+        <p class="slide-label mb-6 md:mb-8" data-hero-label>{slides[0].label}</p>
+        <h1
+          class="slide-heading mb-8 text-5xl !leading-[0.98] text-cream md:text-6xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6rem] whitespace-pre-line"
+          data-hero-title
+        >
+          {slides[0].title}
+        </h1>
+        <blockquote class="mb-8 max-w-2xl md:mb-10">
+          <p class="slide-body text-xl italic text-cream-muted md:text-2xl" data-hero-quote>
+            «{slides[0].quote}»
+          </p>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute inset-x-0 bottom-8 z-10 flex justify-center">
+    <a
+      href={`${prefix}/cartas`}
+      class="inline-flex items-center justify-center border border-gold-text/40 bg-transparent px-10 py-4 font-label text-base font-medium uppercase tracking-[0.25em] text-cream transition-all duration-400 ease-premium hover:scale-[1.04] hover:border-gold-text hover:text-gold-text active:scale-[0.98]"
+    >
+      {m.hero.discover}
+    </a>
+  </div>
+</section>
+
+<script define:vars={{ slidesJson: JSON.stringify(slides) }}>
+  const slides = JSON.parse(slidesJson)
+  const stage = document.getElementById('hero-stage')
+  const media = document.getElementById('hero-media')
+  const frames = [...document.querySelectorAll('[data-hero-frame]')]
+  const copyMobile = document.getElementById('hero-copy-mobile')
+  const copyDesktop = document.getElementById('hero-copy-desktop')
+  const copyWrap = document.getElementById('hero-copy-desktop-wrap')
+  const texLeft = document.getElementById('hero-texture-left')
+  const texRight = document.getElementById('hero-texture-right')
+  if (stage && media && copyMobile && copyDesktop && copyWrap) {
+
+  const CROSSFADE = 1100
+  const SWAP = 1600
+  const INTERVAL = 5200
+  let index = 0
+  let leaving = null
+  let motionOn = false
+  let timer = null
+  let paused = false
+
+  function offset(position, current, total) {
+    if (total <= 1) return 0
+    let diff = position - current
+    const half = total / 2
+    if (diff > half) diff -= total
+    if (diff < -half) diff += total
+    return diff
+  }
+
+  function mirrored() {
+    return index % 2 === 1
+  }
+
+  function setCopy(root, slide, animate) {
+    const label = root.querySelector('[data-hero-label]')
+    const title = root.querySelector('[data-hero-title]')
+    const quote = root.querySelector('[data-hero-quote]')
+    if (animate) {
+      root.classList.remove('hero-copy')
+      root.classList.add('hero-copy-out')
+      window.setTimeout(() => {
+        if (label) label.textContent = slide.label
+        if (title) title.textContent = slide.title
+        if (quote) quote.textContent = `«${slide.quote}»`
+        root.classList.remove('hero-copy-out')
+        void root.offsetWidth
+        root.classList.add('hero-copy')
+      }, Math.round(CROSSFADE * 0.4))
+    } else {
+      if (label) label.textContent = slide.label
+      if (title) title.textContent = slide.title
+      if (quote) quote.textContent = `«${slide.quote}»`
+    }
+  }
+
+  function paint(animateCopy) {
+    const mirror = mirrored()
+    media.classList.toggle('lg:translate-x-0', mirror)
+    media.classList.toggle('lg:translate-x-full', !mirror)
+    copyWrap.classList.toggle('lg:translate-x-full', mirror)
+    copyWrap.classList.toggle('lg:translate-x-0', !mirror)
+    copyWrap.classList.toggle('lg:text-right', mirror)
+    copyWrap.classList.toggle('lg:text-left', !mirror)
+
+    if (texLeft && texRight) {
+      texLeft.style.opacity = mirror ? '0' : '1'
+      texRight.style.opacity = mirror ? '1' : '0'
+    }
+
+    frames.forEach((frame, position) => {
+      const active = position === index
+      const exiting = position === leaving
+      const slide = slides[position]
+      const off = offset(position, index, slides.length)
+      frame.style.setProperty('--hero-x', `${off * 6}%`)
+      frame.style.zIndex = exiting ? '3' : active ? '2' : '1'
+      frame.style.opacity = active || exiting ? '' : '0'
+      frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
+      if (motionOn) {
+        if (active) frame.classList.add('hero-slide-in')
+        else if (exiting) frame.classList.add(position === 0 ? 'hero-slide-out' : 'hero-slide-out', ...(position === 0 ? ['lg:hero-slide-out-cover'] : []))
+      } else if (!active) {
+        frame.style.opacity = '0'
+      }
+
+      const img = frame.querySelector('[data-hero-img]')
+      if (!img) return
+      img.classList.remove('hero-zoom-in', 'hero-zoom-out', 'hero-drift', 'hero-float', 'scale-[1.14]')
+      if (active || exiting) {
+        img.classList.add(position % 2 === 0 ? 'hero-zoom-in' : 'hero-zoom-out')
+        if (slide.fit === 'contain') img.classList.add('hero-float')
+        else img.classList.add('hero-drift')
+      } else if (slide.fit !== 'contain') {
+        img.classList.add('scale-[1.14]')
+      }
+    })
+
+    setCopy(copyMobile, slides[index], animateCopy)
+    setCopy(copyDesktop, slides[index], animateCopy)
+  }
+
+  function go(next) {
+    if (slides.length < 2) return
+    leaving = index
+    index = (next + slides.length) % slides.length
+    motionOn = true
+    paint(true)
+    const hold = window.matchMedia('(min-width: 1024px)').matches ? SWAP : CROSSFADE
+    window.setTimeout(() => {
+      leaving = null
+      paint(false)
+    }, hold)
+  }
+
+  function next() {
+    go(index + 1)
+  }
+
+  function arm() {
+    window.clearInterval(timer)
+    if (paused || slides.length < 2) return
+    timer = window.setInterval(next, INTERVAL)
+  }
+
+  paint(false)
+  arm()
+
+  stage.addEventListener('mouseenter', () => {
+    paused = true
+    stage.setAttribute('data-paused', 'true')
+    arm()
+  })
+  stage.addEventListener('mouseleave', () => {
+    paused = false
+    stage.setAttribute('data-paused', 'false')
+    arm()
+  })
+
+  let touchX = 0
+  let armed = false
+  stage.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse') return
+    armed = true
+    touchX = event.clientX
+  })
+  stage.addEventListener('pointerup', (event) => {
+    if (!armed) return
+    armed = false
+    const delta = event.clientX - touchX
+    if (delta > 48) go(index - 1)
+    else if (delta < -48) go(index + 1)
+  })
+  stage.addEventListener('pointercancel', () => {
+    armed = false
+  })
+  }
+</script>

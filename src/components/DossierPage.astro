@@ -1,26 +1,35 @@
 ---
+import ContactCTA from '@/components/ContactCTA.astro'
+import BrandDivider from '@/components/ui/BrandDivider.astro'
 import type { DossierPageContent } from '@/data/dossierTypes'
 import { dossierImageUrl } from '@/data/dossierTypes'
+import type { Locale } from '@/i18n/locale'
 import Layout from '@/layouts/Layout.astro'
 
 interface Props {
   content: DossierPageContent
+  locale?: Locale
 }
 
-const { content } = Astro.props
+const { content, locale = 'es' } = Astro.props
 const hero = content.heroImages?.[0]
 ---
 
-<Layout title={content.seoTitle} description={content.seoDescription} path={content.path}>
+<Layout
+  title={content.seoTitle}
+  description={content.seoDescription}
+  path={content.path}
+  locale={locale}
+>
   <section class="bg-ink text-cream">
-    <div class="container-x py-12 md:py-16">
+    <div class="container-premium py-12 md:py-16">
       <p class="slide-label mb-6">{content.kicker}</p>
       <h1 class="slide-heading max-w-4xl text-4xl text-cream md:text-6xl">
         {content.title}
-        {content.emphasis && <span class="gold-text"> {content.emphasis}</span>}
+        {content.emphasis && <span class="slide-accent"> {content.emphasis}</span>}
       </h1>
-      <div class="brand-divider !mx-0 mt-8 mb-6 max-w-[8rem]"></div>
-      <p class="slide-body max-w-3xl text-lg md:text-xl">{content.lead}</p>
+      <BrandDivider class="!mx-0 mt-8 mb-6 max-w-[8rem]" />
+      <p class="slide-body max-w-3xl text-lg text-cream-muted md:text-xl">{content.lead}</p>
       {
         hero && (
           <div class="mt-10 overflow-hidden">
@@ -45,45 +54,30 @@ const hero = content.heroImages?.[0]
         <section
           id={section.id}
           class:list={[
-            'border-t border-white/5 py-14 md:py-20',
-            dark ? 'bg-ink text-cream' : 'bg-beige-50 text-ink',
+            'section-padding relative overflow-hidden border-t border-white/5',
+            dark
+              ? 'bg-ink text-cream [&_.slide-heading]:text-cream [&_.slide-body]:text-cream-muted'
+              : section.variant === 'beige'
+                ? 'bg-beige-100/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone'
+                : 'bg-beige-50/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone',
           ]}
         >
-          <div class="container-x grid gap-10 lg:grid-cols-2 lg:items-start">
+          <div class="container-premium relative z-[2] grid gap-10 lg:grid-cols-2 lg:items-start">
             <div>
-              <p class:list={['slide-label mb-4', !dark && 'text-gold-dark']}>{section.kicker}</p>
-              <h2
-                class:list={[
-                  'slide-heading mb-6 text-3xl md:text-4xl',
-                  dark ? 'text-cream' : 'text-ink',
-                ]}
-              >
+              <p class="slide-label mb-4">{section.kicker}</p>
+              <h2 class="slide-heading mb-6 text-3xl md:text-4xl">
                 {section.title}
-                {section.emphasis && <span class="gold-text"> {section.emphasis}</span>}
+                {section.emphasis && <span class="slide-accent"> {section.emphasis}</span>}
               </h2>
               <div class="space-y-4">
                 {section.paragraphs.map((paragraph) => (
-                  <p
-                    class:list={[
-                      'slide-body text-base md:text-lg',
-                      dark ? 'text-cream-muted' : 'text-slate',
-                    ]}
-                  >
-                    {paragraph}
-                  </p>
+                  <p class="slide-body text-base md:text-lg">{paragraph}</p>
                 ))}
               </div>
               {section.highlights && section.highlights.length > 0 && (
                 <ul class="mt-8 space-y-2">
                   {section.highlights.map((item) => (
-                    <li
-                      class:list={[
-                        'font-[family-name:var(--font-label)] text-sm tracking-wide',
-                        dark ? 'text-gold-slide' : 'text-gold-dark',
-                      ]}
-                    >
-                      — {item}
-                    </li>
+                    <li class="font-label text-sm tracking-wide text-gold-slide">— {item}</li>
                   ))}
                 </ul>
               )}
@@ -93,7 +87,7 @@ const hero = content.heroImages?.[0]
                 <img
                   src={dossierImageUrl(image)}
                   alt={image.caption}
-                  class="aspect-[4/3] w-full object-cover"
+                  class="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-premium hover:scale-[1.02]"
                   loading="lazy"
                   decoding="async"
                 />
@@ -104,4 +98,6 @@ const hero = content.heroImages?.[0]
       )
     })
   }
+
+  <ContactCTA locale={locale} fadeTop />
 </Layout>

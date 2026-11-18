@@ -1,0 +1,18 @@
+---
+import DossierPage from '@/components/DossierPage.astro'
+import { dossierPages } from '@/data/dossier'
+import { localizeDossier } from '@/data/dossier/en'
+
+export function getStaticPaths() {
+  return dossierPages
+    .filter((entry) => entry.slug !== 'blog')
+    .map((entry) => ({
+      params: { page: entry.slug },
+      props: { content: localizeDossier(entry.content, 'en') },
+    }))
+}
+
+const { content } = Astro.props
+---
+
+<DossierPage content={content} locale="en" />

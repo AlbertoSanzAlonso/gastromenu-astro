@@ -1,7 +1,7 @@
 ---
 import { FOOTER_WATERMARK_SRC } from '@/data/brand'
 import { getMessages } from '@/i18n'
-import { type Locale } from '@/i18n/locale'
+import type { Locale } from '@/i18n/locale'
 
 interface Props {
   locale?: Locale
@@ -27,25 +27,25 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
       decoding="async"
       class="cookie-notice-watermark cookie-notice-watermark--soft"
     />
-    <img
-      src={FOOTER_WATERMARK_SRC}
-      alt=""
-      decoding="async"
-      class="cookie-notice-watermark"
-    />
+    <img src={FOOTER_WATERMARK_SRC} alt="" decoding="async" class="cookie-notice-watermark" />
     <div class="cookie-notice-fade"></div>
   </div>
-  <div class="container-x cookie-notice-panel flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+  <div
+    class="container-premium cookie-notice-panel relative z-[2] flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+  >
     <p class="slide-body max-w-3xl text-sm">
       {m.cookies.body}{' '}
-      <a href={privacyHref} class="text-gold-slide underline underline-offset-4 hover:text-gold-highlight">
+      <a
+        href={privacyHref}
+        class="text-gold-slide underline underline-offset-4 transition-colors hover:text-gold-highlight"
+      >
         {m.cookies.privacy}
       </a>.
     </p>
     <button
       type="button"
       id="cookie-notice-accept"
-      class="inline-flex items-center justify-center border border-gold-slide/60 px-5 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-gold-slide hover:bg-gold-slide hover:text-ink"
+      class="inline-flex max-w-full items-center justify-center border border-ink bg-ink px-8 py-3 font-label text-sm font-medium uppercase tracking-[0.25em] text-cream transition-all duration-400 ease-premium hover:scale-[1.04] hover:border-gold-slide hover:bg-charcoal hover:shadow-lg hover:shadow-gold-slide/30 active:scale-[0.98] md:max-w-none"
     >
       {m.cookies.accept}
     </button>

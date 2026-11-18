@@ -1,8 +1,10 @@
 ---
-import Layout from '@/layouts/Layout.astro'
+import Heading from '@/components/ui/Heading.astro'
+import Section from '@/components/ui/Section.astro'
 import { company } from '@/data/contact'
 import { getMessages } from '@/i18n'
 import type { Locale } from '@/i18n/locale'
+import Layout from '@/layouts/Layout.astro'
 
 interface Props {
   title: string
@@ -19,22 +21,20 @@ const m = getMessages(locale)
 ---
 
 <Layout title={title} description={description} path={path} locale={locale}>
-  <section class="bg-ink pb-20 pt-12 text-cream md:pt-16">
-    <div class="container-x">
-      <p class="slide-label mb-4 text-center">{company.legalName}</p>
-      <h1 class="slide-heading mx-auto mb-4 max-w-3xl text-center text-4xl md:text-6xl">
-        {heading} <span class="gold-text">{accent}</span>
-      </h1>
-      <article class="mx-auto mt-10 max-w-3xl">
-        <p class="slide-label mb-14 text-center text-[10px] tracking-[0.16em] sm:tracking-[0.28em]">
-          {updated ?? m.legal.updated}
-        </p>
-        <div
-          class="space-y-12 [&_a]:text-gold-slide [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-gold-highlight [&_h2]:slide-heading [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:text-cream md:[&_h2]:text-3xl [&_li]:slide-body [&_p]:slide-body [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_ul]:marker:text-gold-slide"
-        >
-          <slot />
-        </div>
-      </article>
-    </div>
-  </section>
+  <Section variant="dark" class="!pt-32">
+    <Heading as="h1" subtitle={company.legalName} align="center" class="mx-auto">
+      {heading} <span class="slide-accent">{accent}</span>
+    </Heading>
+
+    <article class="mx-auto -mt-8 max-w-3xl">
+      <p class="slide-label mb-14 text-center text-[10px] !tracking-[0.16em] sm:!tracking-[0.28em]">
+        {updated ?? m.legal.updated}
+      </p>
+      <div
+        class="space-y-12 [&_a]:text-gold-slide [&_a]:underline [&_a]:underline-offset-4 [&_a]:transition-colors hover:[&_a]:text-gold-highlight [&_h2]:slide-heading [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:text-cream md:[&_h2]:text-3xl [&_li]:slide-body [&_p]:slide-body [&_strong]:font-normal [&_strong]:text-cream [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_ul]:marker:text-gold-slide"
+      >
+        <slot />
+      </div>
+    </article>
+  </Section>
 </Layout>

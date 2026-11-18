@@ -1,6 +1,6 @@
 # GastroMenu Premium (Astro)
 
-Clon hermano del sitio Vite+React en `../gastromenu`, orientado a **SSG** para SEO: el HTML de cada ruta incluye el contenido (no solo meta tags).
+Clon hermano del sitio Vite+React en `../gastromenu`, orientado a **SSG** para SEO.
 
 ## Requisitos
 
@@ -12,37 +12,31 @@ Clon hermano del sitio Vite+React en `../gastromenu`, orientado a **SSG** para S
 cd ../gastromenu-astro
 nvm use
 npm install
+cp .env.example .env   # opcional
 npm run dev
 ```
 
-Build estático:
+Build:
 
 ```bash
 npm run build && npm run preview
 ```
 
-## Qué incluye (fase 1)
+Formulario de contacto: en local apunta a `/api/contact` (proxy Vite → wrangler `:8787`). En producción, define `PUBLIC_CONTENT_API` o sirve el worker en el mismo origen.
 
-- Home, dossier (`/nosotros`, `/cartas`, `/atriles`, `/manteles`, `/exclusividades`)
-- Blog índice + artículos
-- Contacto
-- SEO head + JSON-LD (misma fuente que el proyecto original: `src/lib/seo/site.ts`)
-- Contenido ES del dossier copiado desde el original
-- `public/images` enlazado por **symlink** al proyecto original (no duplica ~50 MB)
+## Incluye (sin admin)
 
-## Qué no incluye aún
+- Home completa (hero, colecciones, about, equipo, CTA)
+- Dossier ES + EN (`/en/...`)
+- Blog ES + EN
+- Contacto con formulario + detalles
+- Legales ES + EN + redirect `/condiciones`
+- Cookies notice + WhatsApp / volver arriba
+- SEO head, JSON-LD, `hreflang` es/en
+- `public/images` via symlink al original
 
-- Admin / Supabase
-- i18n EN + `hreflang`
-- Formularios de contacto vía Worker
-- Paridad visual completa (hero carrusel, animaciones, legales)
+## No incluye
 
-## Relación con el original
-
-| Original (`gastromenu`) | Este clon |
-| --- | --- |
-| Vite SPA + shells HTML | Astro SSG (HTML con body) |
-| Producción actual | Preview / experimento SEO |
-| `public/images` | Symlink → original |
-
-Cuando el clon esté listo, el cutover de producción sería apuntar el deploy a este proyecto (o fusionar lo necesario).
+- Admin / Supabase backoffice
+- Admin / CMS dinámico del hero (usa slides por defecto)
+- Algunos microdetalles React del original (lightbox de dossier, etc.)

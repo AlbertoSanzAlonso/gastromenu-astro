@@ -1,0 +1,53 @@
+---
+interface Props {
+  id?: string
+  variant?: 'light' | 'dark' | 'beige'
+  ariaLabel?: string
+  watermarkSrc?: string
+  edgeFade?: 'top' | 'bottom' | 'both'
+  class?: string
+}
+
+const {
+  id,
+  variant = 'light',
+  ariaLabel,
+  watermarkSrc,
+  edgeFade,
+  class: className = '',
+} = Astro.props
+
+const variantStyles = {
+  light: 'bg-beige-50/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone',
+  dark: 'bg-ink text-cream [&_.slide-heading]:text-cream [&_.slide-body]:text-cream-muted',
+  beige: 'bg-beige-100/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone',
+}
+
+const fadeClass =
+  variant === 'dark'
+    ? watermarkSrc
+      ? 'section-edge-fade'
+      : ''
+    : edgeFade === 'both'
+      ? 'section-edge-fade'
+      : edgeFade === 'top'
+        ? 'section-edge-fade section-edge-fade-top'
+        : edgeFade === 'bottom'
+          ? 'section-edge-fade section-edge-fade-bottom'
+          : ''
+---
+
+<section
+  id={id}
+  aria-label={ariaLabel}
+  class:list={['section-padding relative overflow-hidden', variantStyles[variant], fadeClass, className]}
+>
+  {
+    watermarkSrc && variant === 'dark' && (
+      <img src={watermarkSrc} alt="" aria-hidden decoding="async" class="section-hero-watermark" />
+    )
+  }
+  <div class="container-premium relative z-[2]">
+    <slot />
+  </div>
+</section>

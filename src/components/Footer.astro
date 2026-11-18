@@ -1,7 +1,9 @@
 ---
+import BrandDivider from '@/components/ui/BrandDivider.astro'
+import { BRAND_ICON_SRC, FOOTER_WATERMARK_SRC } from '@/data/brand'
 import { company, socialLinks } from '@/data/contact'
 import { getMessages } from '@/i18n'
-import { type Locale } from '@/i18n/locale'
+import type { Locale } from '@/i18n/locale'
 
 interface Props {
   locale?: Locale
@@ -14,21 +16,42 @@ const year = new Date().getFullYear()
 const [primary, secondary] = company.phones
 ---
 
-<footer class="relative z-10 border-t border-gold/10 bg-ink py-16 text-cream md:py-20">
-  <div class="container-x">
+<footer
+  class="relative z-10 overflow-hidden border-t border-gold/10 bg-ink py-16 text-cream md:py-20 [&_.slide-body]:text-cream-muted"
+>
+  <img
+    src={FOOTER_WATERMARK_SRC}
+    alt=""
+    aria-hidden
+    decoding="async"
+    class="section-watermark section-watermark--footer"
+  />
+  <div aria-hidden class="section-watermark-overlay section-watermark-overlay--footer"></div>
+
+  <div class="container-premium relative z-[2]">
     <div class="mx-auto flex max-w-xl flex-col items-center text-center">
-      <img src="/logo-mark.svg" alt="" width="64" height="64" class="mb-3 h-14 w-14 md:h-16 md:w-16" />
-      <p class="brand-title mb-4 text-sm text-gold-slide md:text-base">GastroMenu Premium</p>
-      <div class="brand-divider mb-4"></div>
-      <p class="slide-body text-sm">{m.footer.tagline}</p>
-      <div class="mt-8 flex gap-5">
+      <div class="mb-4 flex flex-col items-center gap-3">
+        <img
+          src={BRAND_ICON_SRC}
+          alt=""
+          aria-hidden
+          class="h-14 w-14 object-contain opacity-95 md:h-16 md:w-16"
+          decoding="async"
+        />
+        <p class="brand-title text-sm tracking-[0.14em] text-gold-slide md:text-base">
+          GastroMenu Premium
+        </p>
+      </div>
+      <BrandDivider class="mb-4" />
+      <p class="slide-body text-sm leading-relaxed">{m.footer.tagline}</p>
+      <div class="mt-8 flex justify-center gap-5">
         {
           socialLinks.map((link) => (
             <a
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-gold-slide"
+              class="font-label text-[11px] uppercase tracking-[0.18em] text-cream/70 transition-colors hover:text-gold-slide"
             >
               {link.label}
             </a>
@@ -38,13 +61,16 @@ const [primary, secondary] = company.phones
     </div>
 
     <div class="mt-14 grid gap-12 md:grid-cols-2 md:gap-8">
-      <div>
+      <div class="md:text-left">
         <p class="slide-label mb-6 text-[10px]">{m.footer.navigation}</p>
         <ul class="space-y-3">
           {
             m.nav.links.map((link) => (
               <li>
-                <a href={`${prefix}${link.to}`} class="slide-body text-sm hover:text-gold-slide">
+                <a
+                  href={`${prefix}${link.to}`}
+                  class="slide-body !text-left text-sm transition-colors hover:text-gold-slide"
+                >
                   {link.label}
                 </a>
               </li>
@@ -54,35 +80,55 @@ const [primary, secondary] = company.phones
       </div>
       <div>
         <p class="slide-label mb-6 text-[10px]">{m.footer.commitment}</p>
-        <p class="slide-body max-w-xs text-sm">{m.footer.commitmentBody}</p>
+        <p class="slide-body max-w-xs text-sm leading-relaxed">{m.footer.commitmentBody}</p>
       </div>
     </div>
 
     <div class="mx-auto mt-16 flex max-w-2xl flex-col items-center gap-3 text-center">
       <p class="font-serif text-lg font-light tracking-wide text-cream md:text-xl">
-        <a href={`tel:${primary.tel}`} class="hover:text-gold-slide">{primary.display}</a>
+        <a href={`tel:${primary.tel}`} class="transition-colors hover:text-gold-slide">{primary.display}</a>
         <span class="mx-3 text-gold-slide/40" aria-hidden>·</span>
-        <a href={`tel:${secondary.tel}`} class="hover:text-gold-slide">{secondary.display}</a>
+        <a href={`tel:${secondary.tel}`} class="transition-colors hover:text-gold-slide"
+          >{secondary.display}</a
+        >
       </p>
-      <a href={`mailto:${company.email}`} class="slide-body text-sm hover:text-gold-slide">
+      <a
+        href={`mailto:${company.email}`}
+        class="slide-body text-sm transition-colors hover:text-gold-slide"
+      >
         {company.email}
       </a>
-      <p class="mt-4 text-sm text-cream-muted">
-        {m.footer.workshops} {company.workshops.places.join(' · ')}
+      <p class="slide-label text-[10px]">
+        {m.footer.workshops} {company.workshops.places.join(', ')}
       </p>
-      <nav class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Legal">
-        <a href={`${prefix}/aviso-legal`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
-          {m.footer.legal}
-        </a>
-        <a href={`${prefix}/privacidad`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
-          {m.footer.privacy}
-        </a>
-        <a href={`${prefix}/condiciones-de-venta`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
-          {m.footer.terms}
-        </a>
-      </nav>
-      <p class="mt-6 font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist">
-        © {year} {company.legalName}. {m.footer.rights}
+      <p class="slide-label text-[10px]">{m.contact.hours}</p>
+    </div>
+
+    <p class="slide-accent mt-12 text-center text-xl md:text-2xl">{m.footer.motto}</p>
+
+    <BrandDivider class="my-12" />
+
+    <p class="slide-label mb-8 text-center text-[10px]">
+      {company.legalName}
+      <span class="mx-3 text-gold-slide/40">·</span>
+      CIF {company.cif}
+    </p>
+
+    <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+      <p class="slide-label text-[10px]">© {year} GastroMenu Premium. {m.footer.rights}</p>
+      <p class="slide-label text-[10px]">
+        <a href={`${prefix}/aviso-legal`} class="transition-colors hover:text-gold-highlight"
+          >{m.footer.legal}</a
+        >
+        <span class="mx-2 text-gold-slide/40">·</span>
+        <a href={`${prefix}/privacidad`} class="transition-colors hover:text-gold-highlight"
+          >{m.footer.privacy}</a
+        >
+        <span class="mx-2 text-gold-slide/40">·</span>
+        <a
+          href={`${prefix}/condiciones-de-venta`}
+          class="transition-colors hover:text-gold-highlight">{m.footer.terms}</a
+        >
       </p>
     </div>
   </div>

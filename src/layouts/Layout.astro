@@ -5,6 +5,7 @@ import FloatingActions from '@/components/FloatingActions.astro'
 import Footer from '@/components/Footer.astro'
 import Header from '@/components/Header.astro'
 import Seo from '@/components/Seo.astro'
+import { BRAND_ICON_SRC } from '@/data/brand'
 import type { Locale } from '@/i18n/locale'
 
 interface Props {
@@ -40,12 +41,17 @@ const { locale = 'es', path = '/', ...seo } = Astro.props
     <Seo {...seo} path={path} locale={locale} />
   </head>
   <body class="min-h-screen">
-    <Header locale={locale} path={path} />
-    <main class="pt-20 md:pt-24">
-      <slot />
-    </main>
-    <Footer locale={locale} />
-    <FloatingActions locale={locale} />
-    <CookieNotice locale={locale} />
+    <div class="flex min-h-screen flex-col">
+      <div aria-hidden class="brand-watermark">
+        <img src={BRAND_ICON_SRC} alt="" decoding="async" />
+      </div>
+      <Header locale={locale} path={path} />
+      <main class="relative z-10 flex-1 pt-20 md:pt-24">
+        <slot />
+      </main>
+      <Footer locale={locale} />
+      <CookieNotice locale={locale} />
+      <FloatingActions locale={locale} />
+    </div>
   </body>
 </html>

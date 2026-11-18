@@ -1,8 +1,11 @@
 ---
 import ContactForm from '@/components/ContactForm.astro'
+import Heading from '@/components/ui/Heading.astro'
+import Section from '@/components/ui/Section.astro'
 import Layout from '@/layouts/Layout.astro'
 import { company, socialLinks } from '@/data/contact'
 import { getMessages } from '@/i18n'
+
 const locale = 'es' as const
 const m = getMessages(locale)
 const apiBase = import.meta.env.PUBLIC_CONTENT_API?.trim() || ''
@@ -10,88 +13,79 @@ const [primary, secondary] = company.phones
 ---
 
 <Layout title={m.seo.contactTitle} description={m.seo.contactDescription} path="/contacto" locale={locale}>
-  <section class="bg-ink pb-20 pt-12 text-cream md:pt-16">
-    <div class="container-x">
-      <p class="slide-label mb-4 text-center">{m.contact.subtitle}</p>
-      <h1 class="slide-heading mx-auto mb-6 max-w-3xl text-center text-4xl md:text-6xl">
-        {m.contact.titleBefore} <span class="gold-text">{m.contact.titleAccent}</span>
-      </h1>
-      <p class="slide-body mx-auto mb-16 max-w-2xl text-center text-lg">
-        {m.contact.call}{' '}
-        <a href={`tel:${primary.tel}`} class="text-gold-slide hover:text-gold-highlight">{primary.display}</a>
-        {m.contact.introAfter}
-      </p>
+  <Section variant="dark" class="!pt-32" ariaLabel={m.contact.titleAccent}>
+    <Heading as="h1" subtitle={m.contact.subtitle} align="center" class="mx-auto">
+      {m.contact.titleBefore} <span class="slide-accent">{m.contact.titleAccent}</span>
+    </Heading>
 
-      <div class="mb-16">
-        <div class="grid border border-gold-slide/20 md:grid-cols-3">
-          <article class="border-b border-gold-slide/20 p-8 md:border-b-0 md:border-r">
-            <p class="slide-label mb-5">{m.contact.call}</p>
-            <a href={`tel:${primary.tel}`} class="block font-serif text-2xl text-cream hover:text-gold-slide">
-              {primary.display}
-            </a>
-            <a href={`tel:${secondary.tel}`} class="mt-2 block font-serif text-lg text-cream-muted hover:text-gold-slide">
-              {secondary.display}
-            </a>
-            <p class="mt-6 text-sm leading-relaxed text-cream-muted">{m.contact.hours}</p>
-          </article>
-          <article class="border-b border-gold-slide/20 p-8 md:border-b-0 md:border-r">
-            <p class="slide-label mb-5">{m.contact.write}</p>
-            <ul class="space-y-4">
-              {
-                company.emails.map((item) => (
-                  <li>
-                    <p class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.18em] text-cream-muted">
-                      {m.contact.emails[item.id]}
-                    </p>
-                    <a
-                      href={`mailto:${item.address}`}
-                      class="mt-1 block break-all font-serif text-base text-cream hover:text-gold-slide"
-                    >
-                      {item.address}
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-          </article>
-          <article class="p-8">
-            <p class="slide-label mb-5">{m.contact.where}</p>
-            <p class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.22em] text-cream-muted">
-              {m.contact.workshops}
-            </p>
-            <p class="mt-3 font-serif text-lg text-cream">{company.workshops.places.join(' · ')}</p>
-            <p class="mt-6 font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.22em] text-cream-muted">
-              {m.contact.office}
-            </p>
-            <p class="mt-3 font-serif text-base text-cream">
-              {company.office.street}<br />
-              {company.office.city}
-            </p>
-          </article>
-        </div>
-        <div class="mt-8 flex flex-col items-center gap-5 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.22em] text-gold-slide">
-            <span class="block">{company.legalName}</span>
-            <span class="mt-1 block tracking-[0.18em] text-cream-muted">CIF {company.cif}</span>
-          </p>
-          <div class="flex gap-5">
+    <p class="slide-body mx-auto mb-16 -mt-8 max-w-2xl text-center">
+      {m.contact.call}{' '}
+      <a href={`tel:${primary.tel}`} class="text-gold-slide transition-colors hover:text-gold-highlight">
+        {primary.display}
+      </a>
+      {m.contact.introAfter}
+    </p>
+
+    <div class="mb-16">
+      <div class="grid border border-gold-slide/20 md:grid-cols-3">
+        <article class="border-b border-gold-slide/20 p-8 md:border-r md:border-b-0">
+          <p class="slide-label mb-5">{m.contact.call}</p>
+          <a href={`tel:${primary.tel}`} class="block font-serif text-2xl text-cream transition-colors hover:text-gold-slide">
+            {primary.display}
+          </a>
+          <a href={`tel:${secondary.tel}`} class="mt-2 block font-serif text-lg text-cream-muted transition-colors hover:text-gold-slide">
+            {secondary.display}
+          </a>
+          <p class="mt-6 text-sm leading-relaxed text-cream-muted">{m.contact.hours}</p>
+        </article>
+        <article class="border-b border-gold-slide/20 p-8 md:border-r md:border-b-0">
+          <p class="slide-label mb-5">{m.contact.write}</p>
+          <ul class="space-y-4">
             {
-              socialLinks.map((link) => (
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-gold-slide"
-                >
-                  {link.label}
-                </a>
+              company.emails.map((item) => (
+                <li>
+                  <p class="font-label text-[10px] uppercase tracking-[0.18em] text-cream-muted">
+                    {m.contact.emails[item.id]}
+                  </p>
+                  <a
+                    href={`mailto:${item.address}`}
+                    class="mt-1 block break-all font-serif text-base text-cream transition-colors hover:text-gold-slide"
+                  >
+                    {item.address}
+                  </a>
+                </li>
               ))
             }
-          </div>
+          </ul>
+        </article>
+        <article class="p-8">
+          <p class="slide-label mb-5">{m.contact.where}</p>
+          <p class="font-label text-[10px] uppercase tracking-[0.22em] text-cream-muted">{m.contact.workshops}</p>
+          <p class="mt-3 font-serif text-lg text-cream">{company.workshops.places.join(' · ')}</p>
+        </article>
+      </div>
+      <div class="mt-8 flex flex-col items-center gap-5 text-center sm:flex-row sm:justify-between sm:text-left">
+        <p class="font-label text-[10px] uppercase tracking-[0.22em] text-gold-slide">
+          <span class="block">{company.legalName}</span>
+          <span class="mt-1 block tracking-[0.18em] text-cream-muted">CIF {company.cif}</span>
+        </p>
+        <div class="flex justify-center gap-5">
+          {
+            socialLinks.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-label text-[11px] uppercase tracking-[0.18em] text-cream/70 transition-colors hover:text-gold-slide"
+              >
+                {link.label}
+              </a>
+            ))
+          }
         </div>
       </div>
-
-      <ContactForm locale={locale} apiBase={apiBase} />
     </div>
-  </section>
+
+    <ContactForm locale={locale} apiBase={apiBase} />
+  </Section>
 </Layout>
