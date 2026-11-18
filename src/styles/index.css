@@ -826,6 +826,7 @@
 
 .hero-drift {
   animation-name: hero-drift;
+  animation-duration: 3.2s;
   animation-timing-function: linear;
   animation-fill-mode: both;
 }
@@ -869,7 +870,7 @@
 @media (max-width: 1023px) {
   .hero-zoom-in,
   .hero-zoom-out {
-    animation-duration: 4.8s;
+    animation-duration: 3.2s;
     animation-timing-function: ease-in-out;
     animation-fill-mode: both;
     transform-origin: center;

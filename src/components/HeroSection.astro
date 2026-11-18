@@ -205,11 +205,14 @@ const coverSrcSet = isCoverPhoto
 
   const CROSSFADE = 700
   const SWAP = 900
-  const INTERVAL = 4200
+  const INTERVAL = 3200
+  const START_DELAY = 1400
   let index = 0
   let leaving = null
   let timer = null
+  let startTimer = null
   let paused = false
+  let started = false
 
   function offset(position, current, total) {
     if (total <= 1) return 0
@@ -320,9 +323,24 @@ const coverSrcSet = isCoverPhoto
     go(index + 1)
   }
 
-  function arm() {
+  function clearTimers() {
+    window.clearTimeout(startTimer)
     window.clearInterval(timer)
+    startTimer = null
+    timer = null
+  }
+
+  function arm() {
+    clearTimers()
     if (paused || slides.length < 2) return
+    if (!started) {
+      startTimer = window.setTimeout(() => {
+        started = true
+        next()
+        timer = window.setInterval(next, INTERVAL)
+      }, START_DELAY)
+      return
+    }
     timer = window.setInterval(next, INTERVAL)
   }
 
@@ -332,7 +350,7 @@ const coverSrcSet = isCoverPhoto
   stage.addEventListener('mouseenter', () => {
     paused = true
     stage.setAttribute('data-paused', 'true')
-    arm()
+    clearTimers()
   })
   stage.addEventListener('mouseleave', () => {
     paused = false
