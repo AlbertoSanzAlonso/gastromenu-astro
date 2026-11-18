@@ -765,8 +765,10 @@
 }
 
 @keyframes hero-copy {
-  0%,
-  48% {
+  0% {
+    opacity: 0;
+  }
+  18% {
     opacity: 0;
   }
   100% {
@@ -778,7 +780,7 @@
   0% {
     opacity: 1;
   }
-  40% {
+  55% {
     opacity: 0;
   }
   100% {
@@ -889,19 +891,19 @@
 }
 
 .hero-copy {
-  animation: hero-copy 1100ms ease both;
+  animation: hero-copy 700ms ease both;
 }
 
 .hero-copy-out {
-  animation: hero-copy-out 1100ms ease both;
+  animation: hero-copy-out 700ms ease both;
 }
 
 .hero-slide-in {
-  animation: hero-slide-in 1100ms ease both;
+  animation: hero-slide-in 700ms ease both;
 }
 
 .hero-slide-out {
-  animation: hero-slide-out 1100ms ease both;
+  animation: hero-slide-out 700ms ease both;
 }
 
 .hero-slide-frame {
@@ -912,7 +914,7 @@
   0% {
     opacity: 0;
   }
-  35% {
+  12% {
     opacity: 0;
   }
   100% {
@@ -924,7 +926,7 @@
   0% {
     opacity: 1;
   }
-  55% {
+  70% {
     opacity: 0;
   }
   100% {
@@ -957,7 +959,7 @@
   .hero-slide-in,
   .hero-copy {
     animation-name: hero-fade-in;
-    animation-duration: 1200ms;
+    animation-duration: 700ms;
     animation-timing-function: ease-in-out;
   }
 
@@ -965,7 +967,7 @@
   .hero-slide-out-cover,
   .hero-copy-out {
     animation-name: hero-fade-out;
-    animation-duration: 1200ms;
+    animation-duration: 700ms;
     animation-timing-function: ease-in-out;
   }
 }
@@ -975,7 +977,7 @@
     0% {
       opacity: 1;
     }
-    44% {
+    55% {
       opacity: 0;
     }
     100% {
@@ -987,7 +989,7 @@
     0% {
       opacity: 1;
     }
-    32% {
+    40% {
       opacity: 0;
     }
     100% {
@@ -997,7 +999,7 @@
 
   @keyframes hero-slide-swap-in {
     0%,
-    46% {
+    20% {
       opacity: 0;
     }
     100% {
@@ -1007,26 +1009,26 @@
 
   .hero-slide-out {
     animation-name: hero-slide-swap-out;
-    animation-duration: 1600ms;
+    animation-duration: 900ms;
     animation-timing-function: ease-in-out;
   }
 
   .hero-slide-out-cover {
     animation-name: hero-slide-swap-out-cover;
-    animation-duration: 1600ms;
+    animation-duration: 900ms;
     animation-timing-function: ease-in-out;
     animation-fill-mode: both;
   }
 
   .hero-slide-in {
     animation-name: hero-slide-swap-in;
-    animation-duration: 1600ms;
+    animation-duration: 900ms;
     animation-timing-function: ease-in-out;
   }
 
   .hero-slide-frame {
     transform: translate3d(var(--hero-x, 0%), 0, 0);
-    transition: transform 1600ms ease-in-out;
+    transition: transform 900ms ease-in-out;
   }
 }
 

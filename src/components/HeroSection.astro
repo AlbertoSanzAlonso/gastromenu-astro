@@ -69,7 +69,7 @@ const coverSrcSet = isCoverPhoto
 
   <div
     id="hero-media"
-    class="absolute inset-0 z-[2] overflow-hidden transition-transform duration-[1600ms] ease-in-out lg:inset-y-0 lg:left-0 lg:w-1/2 lg:translate-x-full"
+    class="absolute inset-0 z-[2] overflow-hidden transition-transform duration-[900ms] ease-in-out lg:inset-y-0 lg:left-0 lg:w-1/2 lg:translate-x-full"
     aria-hidden
   >
     {
@@ -118,14 +118,14 @@ const coverSrcSet = isCoverPhoto
     }
     <div
       id="hero-edge-fade-left"
-      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[1600ms] ease-in-out lg:block opacity-100"
+      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[900ms] ease-in-out lg:block opacity-100"
       style="background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.45) 24%, transparent 56%)"
       aria-hidden
     >
     </div>
     <div
       id="hero-edge-fade-right"
-      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[1600ms] ease-in-out lg:block opacity-0"
+      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[900ms] ease-in-out lg:block opacity-0"
       style="background: linear-gradient(to left, #000 0%, rgba(0,0,0,0.45) 24%, transparent 56%)"
       aria-hidden
     >
@@ -160,7 +160,7 @@ const coverSrcSet = isCoverPhoto
 
     <div
       id="hero-copy-desktop-wrap"
-      class="hidden max-w-5xl transition-transform duration-[1600ms] ease-in-out lg:block lg:min-h-[24rem] lg:max-w-[50%] lg:translate-x-0 lg:text-left"
+      class="hidden max-w-5xl transition-transform duration-[900ms] ease-in-out lg:block lg:min-h-[24rem] lg:max-w-[50%] lg:translate-x-0 lg:text-left"
     >
       <div id="hero-copy-desktop">
         <p class="slide-label mb-6 md:mb-8" data-hero-label>{slides[0].label}</p>
@@ -203,9 +203,9 @@ const coverSrcSet = isCoverPhoto
   const edgeFadeRight = document.getElementById('hero-edge-fade-right')
   if (stage && media && copyMobile && copyDesktop && copyWrap) {
 
-  const CROSSFADE = 1200
-  const SWAP = 1600
-  const INTERVAL = 5200
+  const CROSSFADE = 700
+  const SWAP = 900
+  const INTERVAL = 4200
   let index = 0
   let leaving = null
   let timer = null
