@@ -22,13 +22,15 @@ const [primary, secondary] = company.phones
   <img
     src={FOOTER_WATERMARK_SRC}
     alt=""
-    aria-hidden
+    aria-hidden="true"
+    width="1024"
+    height="1536"
     loading="lazy"
     decoding="async"
     fetchpriority="low"
     class="section-watermark section-watermark--footer"
   />
-  <div aria-hidden class="section-watermark-overlay section-watermark-overlay--footer"></div>
+  <div aria-hidden="true" class="section-watermark-overlay section-watermark-overlay--footer"></div>
 
   <div class="container-premium relative z-[2]">
     <div class="mx-auto flex max-w-xl flex-col items-center text-center">
@@ -36,7 +38,9 @@ const [primary, secondary] = company.phones
         <img
           src={BRAND_ICON_SRC}
           alt=""
-          aria-hidden
+          aria-hidden="true"
+          width="64"
+          height="64"
           class="h-14 w-14 object-contain opacity-95 md:h-16 md:w-16"
           decoding="async"
         />

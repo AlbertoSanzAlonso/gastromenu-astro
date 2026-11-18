@@ -17,6 +17,7 @@ export default defineConfig({
       cssVariable: '--font-cinzel',
       weights: [400, 600],
       styles: ['normal'],
+      display: 'swap',
       fallbacks: ['Times New Roman', 'Times', 'serif'],
     },
     {
@@ -26,6 +27,7 @@ export default defineConfig({
       // Google ya no sirve Playfair 300; 400 es la cara ligera real disponible.
       weights: [400, 500],
       styles: ['normal', 'italic'],
+      display: 'swap',
       fallbacks: ['Georgia', 'Times New Roman', 'serif'],
     },
     {
@@ -34,6 +36,8 @@ export default defineConfig({
       cssVariable: '--font-montserrat',
       weights: [400, 500],
       styles: ['normal'],
+      // optional: evita CLS tardío en labels si la fuente no llega a tiempo
+      display: 'optional',
       fallbacks: ['system-ui', 'Segoe UI', 'sans-serif'],
     },
     {
@@ -42,6 +46,7 @@ export default defineConfig({
       cssVariable: '--font-pinyon',
       weights: [400],
       styles: ['normal'],
+      display: 'optional',
       fallbacks: ['Segoe Script', 'Apple Chancery', 'cursive'],
     },
   ],

@@ -44,7 +44,16 @@ const fadeClass =
 >
   {
     watermarkSrc && variant === 'dark' && (
-      <img src={watermarkSrc} alt="" aria-hidden decoding="async" class="section-hero-watermark" />
+      <img
+        src={watermarkSrc}
+        alt=""
+        aria-hidden="true"
+        width="1620"
+        height="945"
+        loading="lazy"
+        decoding="async"
+        class="section-hero-watermark"
+      />
     )
   }
   <div class="container-premium relative z-[2]">

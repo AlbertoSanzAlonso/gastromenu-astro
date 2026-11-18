@@ -33,9 +33,9 @@ const isHome = path === '/' || path === '/en'
     <link rel="apple-touch-icon" href="/icono_gm_sin_fondo.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-    {/* Solo precarga Cinzel: marca del primer viewport; el resto no compite con el LCP de imagen */}
+    {/* Precarga tipografías del primer viewport para reducir CLS al swap */}
     <Font cssVariable="--font-cinzel" preload />
-    <Font cssVariable="--font-playfair" />
+    <Font cssVariable="--font-playfair" preload />
     <Font cssVariable="--font-montserrat" />
     <Font cssVariable="--font-pinyon" />
     {
@@ -56,7 +56,14 @@ const isHome = path === '/' || path === '/en'
   <body class="min-h-screen">
     <div class="flex min-h-screen flex-col">
       <div aria-hidden class="brand-watermark">
-        <img src={BRAND_ICON_SRC} alt="" decoding="async" />
+        <img
+          src={BRAND_ICON_SRC}
+          alt=""
+          width="341"
+          height="539"
+          decoding="async"
+          fetchpriority="low"
+        />
       </div>
       <Header locale={locale} path={path} />
       <main class="relative z-10 flex-1 pt-20 md:pt-24">
