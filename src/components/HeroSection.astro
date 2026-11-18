@@ -205,7 +205,7 @@ const coverSrcSet = isCoverPhoto
 
   const CROSSFADE = 700
   const SWAP = 900
-  const INTERVAL = 3200
+  const INTERVAL = 5000
   const START_DELAY = 1400
   let index = 0
   let leaving = null
@@ -225,6 +225,11 @@ const coverSrcSet = isCoverPhoto
 
   function mirrored() {
     return index % 2 === 1
+  }
+
+  function setAlign(mirror) {
+    copyWrap.classList.toggle('lg:text-right', mirror)
+    copyWrap.classList.toggle('lg:text-left', !mirror)
   }
 
   function setCopy(root, slide, animate) {
@@ -249,14 +254,13 @@ const coverSrcSet = isCoverPhoto
     }
   }
 
-  function paint(animateCopy, animateSlides) {
+  function paint(animateCopy, animateSlides, { deferAlign = false } = {}) {
     const mirror = mirrored()
     media.classList.toggle('lg:translate-x-0', mirror)
     media.classList.toggle('lg:translate-x-full', !mirror)
     copyWrap.classList.toggle('lg:translate-x-full', mirror)
     copyWrap.classList.toggle('lg:translate-x-0', !mirror)
-    copyWrap.classList.toggle('lg:text-right', mirror)
-    copyWrap.classList.toggle('lg:text-left', !mirror)
+    if (!deferAlign) setAlign(mirror)
 
     if (texLeft && texRight) {
       texLeft.style.opacity = mirror ? '0' : '1'
@@ -311,8 +315,10 @@ const coverSrcSet = isCoverPhoto
     if (slides.length < 2) return
     leaving = index
     index = (next + slides.length) % slides.length
-    paint(true, true)
-    const hold = window.matchMedia('(min-width: 1024px)').matches ? SWAP : CROSSFADE
+    const desktop = window.matchMedia('(min-width: 1024px)').matches
+    // En desktop, la alineación del texto espera a que el bloque termine de cruzar.
+    paint(true, true, { deferAlign: desktop })
+    const hold = desktop ? SWAP : CROSSFADE
     window.setTimeout(() => {
       leaving = null
       paint(false, false)
