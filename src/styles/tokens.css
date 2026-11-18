@@ -24,13 +24,13 @@
   --color-gold-muted: #6c4e36;
   --color-gold-text: #c5a059;
 
-  /* Hero / logotipo */
-  --font-brand: 'Cinzel', Georgia, serif;
+  /* Hero / logotipo — fallbacks métricamente cercanos para reducir CLS al swap */
+  --font-brand: 'Cinzel', 'Times New Roman', Times, serif;
 
   /* Diapositiva — fuera del hero */
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-label: 'Montserrat', system-ui, sans-serif;
-  --font-script: 'Pinyon Script', cursive;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-label: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-script: 'Pinyon Script', 'Segoe Script', 'Apple Chancery', cursive;
   --font-display: var(--font-serif);
   --font-body: var(--font-serif);
   --font-ui: var(--font-label);

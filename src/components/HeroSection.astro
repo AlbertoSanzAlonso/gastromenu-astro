@@ -23,6 +23,9 @@ const slides = buildHeroSlides(m.hero.slides).map((slide, index) =>
     : slide,
 )
 const HERO_TEXTURE = '/images/hero-texture.webp'
+const coverImage = slides[0]?.image ?? '/images/hero-ref-01.webp'
+const coverImageMobile =
+  coverImage === '/images/hero-ref-01.webp' ? '/images/hero-ref-01-800.webp' : coverImage
 ---
 
 <section
@@ -36,9 +39,12 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
     <img
       src={HERO_TEXTURE}
       alt=""
+      width="1024"
+      height="1024"
       class="h-full w-full scale-x-[-1] object-cover object-right [mask-image:linear-gradient(to_left,black_0%,black_45%,transparent_100%)]"
-      loading="eager"
+      loading="lazy"
       decoding="async"
+      fetchpriority="low"
     />
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
@@ -47,9 +53,12 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
     <img
       src={HERO_TEXTURE}
       alt=""
+      width="1024"
+      height="1024"
       class="h-full w-full object-cover object-left [mask-image:linear-gradient(to_right,transparent_0%,black_55%,black_100%)]"
-      loading="eager"
+      loading="lazy"
       decoding="async"
+      fetchpriority="low"
     />
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25"></div>
     <div class="absolute inset-0 bg-gradient-to-l from-black/30 to-transparent"></div>
@@ -75,8 +84,16 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
           style={`opacity:${position === 0 ? '1' : '0'}; z-index:${position === 0 ? '2' : '1'}; --hero-x: ${position === 0 ? '0%' : `${position * 6}%`};`}
         >
           <img
-            src={item.image}
+            src={position === 0 ? coverImageMobile : item.image}
+            srcset={
+              position === 0 && item.image === '/images/hero-ref-01.webp'
+                ? `${coverImageMobile} 800w, ${item.image} 1254w`
+                : undefined
+            }
+            sizes={position === 0 ? '100vw' : undefined}
             alt=""
+            width={position === 0 ? 800 : 1448}
+            height={position === 0 ? 800 : 1086}
             data-hero-img
             class:list={[
               'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
@@ -85,7 +102,8 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
               position === 0 && item.fit === 'contain' && 'hero-float',
             ]}
             loading={position === 0 ? 'eager' : 'lazy'}
-            decoding="async"
+            decoding={position === 0 ? 'sync' : 'async'}
+            fetchpriority={position === 0 ? 'high' : 'low'}
           />
           {
             position === 0 && (
@@ -126,7 +144,7 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
     <div class="hero-mobile-copy mx-auto min-h-[28rem] max-w-3xl text-center md:min-h-[32rem] lg:hidden">
       <h1 class="brand-title gold-shimmer mb-8 text-3xl sm:text-4xl md:text-5xl">GastroMenu Premium</h1>
       <BrandDivider class="mb-8" />
-      <div id="hero-copy-mobile" class="hero-copy">
+      <div id="hero-copy-mobile">
         <p class="brand-eyebrow mb-6 text-[11px] md:text-xs" data-hero-label>{slides[0].label}</p>
         <p
           class="slide-heading mb-6 text-4xl !leading-[1.05] text-cream md:text-5xl whitespace-pre-line"
@@ -145,7 +163,7 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
       id="hero-copy-desktop-wrap"
       class="hidden max-w-5xl transition-transform duration-[1600ms] ease-in-out lg:block lg:min-h-[24rem] lg:max-w-[50%] lg:translate-x-0 lg:text-left"
     >
-      <div id="hero-copy-desktop" class="hero-copy">
+      <div id="hero-copy-desktop">
         <p class="slide-label mb-6 md:mb-8" data-hero-label>{slides[0].label}</p>
         <h1
           class="slide-heading mb-8 text-5xl !leading-[0.98] text-cream md:text-6xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6rem] whitespace-pre-line"

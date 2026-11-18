@@ -22,12 +22,19 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
 >
   <div class="cookie-notice-art" aria-hidden>
     <img
-      src={FOOTER_WATERMARK_SRC}
+      data-cookie-art
       alt=""
       decoding="async"
+      fetchpriority="low"
       class="cookie-notice-watermark cookie-notice-watermark--soft"
     />
-    <img src={FOOTER_WATERMARK_SRC} alt="" decoding="async" class="cookie-notice-watermark" />
+    <img
+      data-cookie-art
+      alt=""
+      decoding="async"
+      fetchpriority="low"
+      class="cookie-notice-watermark"
+    />
     <div class="cookie-notice-fade"></div>
   </div>
   <div
@@ -52,7 +59,7 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
   </div>
 </aside>
 
-<script>
+<script define:vars={{ watermarkSrc: FOOTER_WATERMARK_SRC }}>
   const STORAGE_KEY = 'gastromenu.cookie-notice'
   const notice = document.getElementById('cookie-notice')
   const accept = document.getElementById('cookie-notice-accept')
@@ -64,6 +71,9 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
       stored = false
     }
     if (!stored) {
+      notice.querySelectorAll('[data-cookie-art]').forEach((img) => {
+        if (img instanceof HTMLImageElement) img.src = watermarkSrc
+      })
       notice.hidden = false
       requestAnimationFrame(() => {
         requestAnimationFrame(() => notice.setAttribute('data-shown', 'true'))
