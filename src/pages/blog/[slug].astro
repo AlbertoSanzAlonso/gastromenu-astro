@@ -1,0 +1,74 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { blogPage } from '@/data/dossier/blog'
+import { dossierImageUrl } from '@/data/dossierTypes'
+import { dossierSeo } from '@/lib/seo/site'
+
+export function getStaticPaths() {
+  return blogPage.sections.map((section) => ({
+    params: { slug: section.id },
+    props: { section },
+  }))
+}
+
+const { section } = Astro.props
+const path = `/blog/${section.id}`
+const title = [section.title, section.emphasis].filter(Boolean).join(' ')
+const description = section.paragraphs[0] ?? dossierSeo.blog.description
+const image = section.images[0]
+---
+
+<Layout title={title} description={description} path={path} type="article" image={image?.src}>
+  <article>
+    <section class="bg-ink text-cream">
+      <div class="container-x py-12 md:py-16">
+        <p class="slide-label mb-4">
+          <a href="/blog" class="hover:text-gold-highlight">Blog</a>
+          <span class="mx-2 text-gold-slide/40">/</span>
+          {section.kicker}
+        </p>
+        <h1 class="slide-heading max-w-4xl text-4xl text-cream md:text-6xl">
+          {section.title}
+          {section.emphasis && <span class="gold-text"> {section.emphasis}</span>}
+        </h1>
+        <div class="brand-divider !mx-0 mt-8 mb-6 max-w-[8rem]"></div>
+      </div>
+    </section>
+
+    <section class="bg-beige-50 py-14 text-ink md:py-20">
+      <div class="container-x grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div class="space-y-5">
+          {
+            section.paragraphs.map((paragraph) => (
+              <p class="slide-body text-lg text-slate md:text-xl">{paragraph}</p>
+            ))
+          }
+          {
+            section.highlights && (
+              <ul class="mt-8 space-y-2 border-t border-ink/10 pt-8">
+                {section.highlights.map((item) => (
+                  <li class="font-[family-name:var(--font-label)] text-sm tracking-wide text-gold-dark">
+                    — {item}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+        {
+          image && (
+            <div class="overflow-hidden bg-ink-muted">
+              <img
+                src={dossierImageUrl(image)}
+                alt={image.caption}
+                class="aspect-[4/5] w-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+          )
+        }
+      </div>
+    </section>
+  </article>
+</Layout>

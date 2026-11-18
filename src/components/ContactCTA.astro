@@ -1,0 +1,40 @@
+---
+import { company } from '@/data/contact'
+import { getMessages } from '@/i18n'
+import { type Locale } from '@/i18n/locale'
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const prefix = locale === 'en' ? '/en' : ''
+const phone = company.phones[0]
+---
+
+<section class="border-t border-white/5 bg-ink py-16 md:py-24" aria-label={m.home.ctaLabel}>
+  <div class="container-x max-w-3xl text-center">
+    <p class="slide-label mb-4">{m.home.ctaKicker}</p>
+    <h2 class="slide-heading mb-6 text-3xl text-cream md:text-5xl">
+      {m.home.ctaTitleBefore}{' '}
+      <span class="gold-text">{m.home.ctaTitleAccent}</span>?
+    </h2>
+    <div class="brand-divider mb-6"></div>
+    <p class="slide-body mb-10 text-lg">{m.home.ctaBody}</p>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a
+        href={`${prefix}/contacto#formulario`}
+        class="inline-flex bg-gold-slide px-6 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.2em] text-ink hover:bg-gold-highlight"
+      >
+        {m.home.ctaButton}
+      </a>
+      <a
+        href={`tel:${phone.tel}`}
+        class="inline-flex border border-cream/40 px-6 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.2em] text-cream hover:border-gold-slide hover:text-gold-slide"
+      >
+        {phone.display}
+      </a>
+    </div>
+  </div>
+</section>

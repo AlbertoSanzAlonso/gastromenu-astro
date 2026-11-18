@@ -1,0 +1,89 @@
+---
+import { company, socialLinks } from '@/data/contact'
+import { getMessages } from '@/i18n'
+import { type Locale } from '@/i18n/locale'
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const prefix = locale === 'en' ? '/en' : ''
+const year = new Date().getFullYear()
+const [primary, secondary] = company.phones
+---
+
+<footer class="relative z-10 border-t border-gold/10 bg-ink py-16 text-cream md:py-20">
+  <div class="container-x">
+    <div class="mx-auto flex max-w-xl flex-col items-center text-center">
+      <img src="/logo-mark.svg" alt="" width="64" height="64" class="mb-3 h-14 w-14 md:h-16 md:w-16" />
+      <p class="brand-title mb-4 text-sm text-gold-slide md:text-base">GastroMenu Premium</p>
+      <div class="brand-divider mb-4"></div>
+      <p class="slide-body text-sm">{m.footer.tagline}</p>
+      <div class="mt-8 flex gap-5">
+        {
+          socialLinks.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-gold-slide"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-14 grid gap-12 md:grid-cols-2 md:gap-8">
+      <div>
+        <p class="slide-label mb-6 text-[10px]">{m.footer.navigation}</p>
+        <ul class="space-y-3">
+          {
+            m.nav.links.map((link) => (
+              <li>
+                <a href={`${prefix}${link.to}`} class="slide-body text-sm hover:text-gold-slide">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <p class="slide-label mb-6 text-[10px]">{m.footer.commitment}</p>
+        <p class="slide-body max-w-xs text-sm">{m.footer.commitmentBody}</p>
+      </div>
+    </div>
+
+    <div class="mx-auto mt-16 flex max-w-2xl flex-col items-center gap-3 text-center">
+      <p class="font-serif text-lg font-light tracking-wide text-cream md:text-xl">
+        <a href={`tel:${primary.tel}`} class="hover:text-gold-slide">{primary.display}</a>
+        <span class="mx-3 text-gold-slide/40" aria-hidden>·</span>
+        <a href={`tel:${secondary.tel}`} class="hover:text-gold-slide">{secondary.display}</a>
+      </p>
+      <a href={`mailto:${company.email}`} class="slide-body text-sm hover:text-gold-slide">
+        {company.email}
+      </a>
+      <p class="mt-4 text-sm text-cream-muted">
+        {m.footer.workshops} {company.workshops.places.join(' · ')}
+      </p>
+      <nav class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2" aria-label="Legal">
+        <a href={`${prefix}/aviso-legal`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
+          {m.footer.legal}
+        </a>
+        <a href={`${prefix}/privacidad`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
+          {m.footer.privacy}
+        </a>
+        <a href={`${prefix}/condiciones-de-venta`} class="font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist hover:text-gold-slide">
+          {m.footer.terms}
+        </a>
+      </nav>
+      <p class="mt-6 font-[family-name:var(--font-label)] text-[10px] uppercase tracking-[0.16em] text-mist">
+        © {year} {company.legalName}. {m.footer.rights}
+      </p>
+    </div>
+  </div>
+</footer>

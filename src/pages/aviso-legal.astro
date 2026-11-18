@@ -1,0 +1,112 @@
+---
+import LegalIdentity from '@/components/legal/LegalIdentity.astro'
+import LegalShell from '@/components/legal/LegalShell.astro'
+import { company } from '@/data/contact'
+import { getMessages } from '@/i18n'
+
+const copy = getMessages('es').legal
+---
+
+<LegalShell
+  title={copy.noticeTitle}
+  heading={copy.noticeHeading}
+  accent={copy.noticeAccent}
+  description={copy.noticeDescription}
+  path="/aviso-legal"
+>
+  <section>
+    <h2>Datos identificativos</h2>
+    <p>
+      En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de servicios de la sociedad
+      de la información y de comercio electrónico, se informan los datos del titular de este sitio
+      web:
+    </p>
+    <LegalIdentity locale="es" />
+  </section>
+
+  <section>
+    <h2>Objeto</h2>
+    <p>
+      {company.domain} presenta la actividad de {company.brand}: diseño, fabricación y
+      comercialización de cartas de menú, manteles de papel, portamenús y otros trabajos de
+      hostelería a medida. La información tiene carácter comercial e informativo. El encargo de un
+      trabajo se formaliza cuando ambas partes aceptan el presupuesto y las
+      <a href="/condiciones-de-venta">condiciones de venta</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Condiciones de uso</h2>
+    <p>
+      El acceso a este sitio implica la aceptación de este aviso legal. Quien lo utilice se
+      compromete a hacerlo de forma lícita, sin lesionar derechos de terceros ni alterar el
+      funcionamiento del sitio, sus contenidos o la seguridad de los sistemas que lo soportan.
+    </p>
+    <p>
+      {company.legalName} puede modificar, suspender o retirar contenidos y servicios sin previo
+      aviso cuando sea necesario para actualizar la información, realizar mejoras o cumplir la
+      normativa aplicable.
+    </p>
+  </section>
+
+  <section>
+    <h2>Propiedad intelectual e industrial</h2>
+    <p>
+      Los textos, fotografías, diseños, logotipos, marcas y demás contenidos de este sitio son
+      titularidad de {company.legalName} o se utilizan con autorización de sus titulares. Quedan
+      reservados todos los derechos.
+    </p>
+    <p>
+      Queda prohibida su reproducción, distribución, comunicación pública o transformación, total o
+      parcial, sin autorización escrita del titular, salvo en los casos permitidos por la ley. Las
+      marcas {company.brand} y Cartas Menú identifican la actividad comercial de la empresa.
+    </p>
+  </section>
+
+  <section>
+    <h2>Responsabilidad</h2>
+    <p>
+      {company.legalName} procura que la información publicada sea exacta y esté actualizada. Aun
+      así, los contenidos pueden contener errores u omisiones y no constituyen una oferta contractual
+      por sí solos. Las características, plazos y precios de cada trabajo se confirman en el
+      presupuesto correspondiente.
+    </p>
+    <p>
+      No se responde de los daños derivados de interferencias, interrupciones, virus o un uso indebido
+      del sitio, ni de las decisiones tomadas únicamente a partir de la información general aquí
+      publicada.
+    </p>
+  </section>
+
+  <section>
+    <h2>Enlaces</h2>
+    <p>
+      Este sitio puede incluir enlaces a páginas de terceros, como mapas o redes sociales. Esos
+      destinos tienen sus propias condiciones y políticas, ajenas a {company.legalName}. La existencia
+      de un enlace no implica relación, recomendación ni responsabilidad sobre esos contenidos.
+    </p>
+    <p>
+      Si un tercero desea enlazar a {company.domain}, el enlace debe dirigir a la página principal sin
+      reproducir sus contenidos ni sugerir una relación que no exista.
+    </p>
+  </section>
+
+  <section>
+    <h2>Protección de datos</h2>
+    <p>
+      El tratamiento de los datos personales recogidos a través de este sitio se explica en la
+      <a href="/privacidad">política de privacidad</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Legislación y jurisdicción</h2>
+    <p>
+      Este aviso se rige por la legislación española. Para cualquier controversia, las partes se
+      someten a los juzgados y tribunales de Málaga, salvo que la normativa de consumidores y usuarios
+      imponga otro fuero.
+    </p>
+    <p><a href="/privacidad">Política de privacidad</a></p>
+    <p><a href="/condiciones-de-venta">Condiciones de venta</a></p>
+  </section>
+</LegalShell>

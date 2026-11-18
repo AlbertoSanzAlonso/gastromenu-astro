@@ -1,0 +1,198 @@
+---
+import { getMessages } from '@/i18n'
+import type { Locale } from '@/i18n/locale'
+
+interface Props {
+  locale?: Locale
+  apiBase?: string
+}
+
+const { locale = 'es', apiBase = '' } = Astro.props
+const m = getMessages(locale)
+const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad`
+const endpoint = apiBase ? `${apiBase.replace(/\/$/, '')}/api/contact` : '/api/contact'
+const fieldClass =
+  'w-full border border-gold-slide/25 bg-ink-soft px-5 py-4 font-serif font-light text-cream transition-colors focus:border-gold-slide focus:outline-none'
+---
+
+<div id="contact-form-root" data-endpoint={endpoint} data-locale={locale}>
+  <div id="contact-form-thanks" class="hidden scroll-mt-24 py-16 text-center md:scroll-mt-28" tabindex="-1">
+    <p class="slide-heading mb-4 text-2xl">{m.form.thanksTitle}</p>
+    <p class="slide-body mx-auto mb-8 max-w-md">{m.form.thanksBody}</p>
+    <button
+      type="button"
+      id="contact-form-again"
+      class="inline-flex border border-gold-slide/60 px-6 py-3 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.18em] text-gold-slide hover:bg-gold-slide hover:text-ink"
+    >
+      {m.form.another}
+    </button>
+  </div>
+
+  <form
+    id="formulario"
+    class="slide-frame relative mx-auto max-w-3xl scroll-mt-24 space-y-10 bg-ink-soft/40 p-8 md:scroll-mt-28 md:p-10"
+  >
+    <div class="absolute -left-[9999px] h-0 overflow-hidden" aria-hidden="true">
+      <label for="companyWebsite">Website</label>
+      <input id="companyWebsite" name="companyWebsite" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <p id="contact-form-error" class="hidden font-[family-name:var(--font-label)] text-sm text-red-300" role="alert"></p>
+
+    <fieldset class="space-y-6">
+      <legend class="slide-label mb-6">{m.form.establishment}</legend>
+      <div>
+        <label for="establishmentName" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">
+          {m.form.establishmentName}
+        </label>
+        <input id="establishmentName" name="establishmentName" required class={fieldClass} />
+      </div>
+      <div>
+        <label for="establishmentType" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">
+          {m.form.establishmentType}
+        </label>
+        <select id="establishmentType" name="establishmentType" required class={fieldClass}>
+          <option value="">{m.form.select}</option>
+          {m.form.types.map((type) => <option value={type.value}>{type.label}</option>)}
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset class="space-y-6">
+      <legend class="slide-label mb-6">{m.form.person}</legend>
+      <div class="grid gap-6 md:grid-cols-2">
+        <div>
+          <label for="firstName" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.firstName}</label>
+          <input id="firstName" name="firstName" required class={fieldClass} />
+        </div>
+        <div>
+          <label for="lastName" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.lastName}</label>
+          <input id="lastName" name="lastName" required class={fieldClass} />
+        </div>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2">
+        <div>
+          <label for="phone" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.phone}</label>
+          <input id="phone" name="phone" type="tel" required class={fieldClass} />
+        </div>
+        <div>
+          <label for="email" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.email}</label>
+          <input id="email" name="email" type="email" required class={fieldClass} />
+        </div>
+      </div>
+      <div>
+        <label for="address" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.address}</label>
+        <input id="address" name="address" class={fieldClass} />
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend class="slide-label mb-6">{m.form.help}</legend>
+      <div class="space-y-4">
+        {
+          m.form.interests.map((option) => (
+            <label class="group flex cursor-pointer items-center gap-4">
+              <input type="checkbox" name="interests" value={option.value} class="h-4 w-4 accent-gold-slide" />
+              <span class="slide-body text-sm transition-colors group-hover:text-cream">{option.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <div>
+      <label for="message" class="slide-label mb-2 block text-[10px] tracking-[0.2em]">{m.form.message}</label>
+      <textarea id="message" name="message" rows="4" class={`${fieldClass} resize-none`}></textarea>
+    </div>
+
+    <label class="flex cursor-pointer items-start gap-4">
+      <input type="checkbox" name="privacyAccepted" required class="mt-1 h-4 w-4 accent-gold-slide" />
+      <span class="slide-body text-sm">
+        {m.form.privacyBefore}{' '}
+        <a href={privacyHref} class="text-gold-slide underline underline-offset-4 hover:text-gold-highlight">
+          {m.form.privacyLink}
+        </a>{' '}*
+      </span>
+    </label>
+
+    <div class="pt-4 text-center">
+      <button
+        type="submit"
+        id="contact-form-submit"
+        class="inline-flex bg-gold-slide px-8 py-4 font-[family-name:var(--font-label)] text-[11px] uppercase tracking-[0.2em] text-ink hover:bg-gold-highlight disabled:opacity-60"
+      >
+        {m.form.submit}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script define:vars={{ sendingLabel: m.form.sending, submitLabel: m.form.submit, errorGeneric: m.form.error, errorInvalid: m.form.errorInvalid }}>
+  const root = document.getElementById('contact-form-root')
+  const form = document.getElementById('formulario')
+  const thanks = document.getElementById('contact-form-thanks')
+  const again = document.getElementById('contact-form-again')
+  const errorEl = document.getElementById('contact-form-error')
+  const submitBtn = document.getElementById('contact-form-submit')
+  if (!root || !form || !thanks || !again || !errorEl || !submitBtn) throw new Error('contact form missing')
+
+  const endpoint = root.dataset.endpoint || '/api/contact'
+
+  again.addEventListener('click', () => {
+    thanks.classList.add('hidden')
+    form.classList.remove('hidden')
+    form.reset()
+  })
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    errorEl.classList.add('hidden')
+    submitBtn.disabled = true
+    submitBtn.textContent = sendingLabel
+
+    const data = new FormData(form)
+    const interests = data.getAll('interests').map(String)
+    const payload = {
+      establishmentName: String(data.get('establishmentName') || ''),
+      establishmentType: String(data.get('establishmentType') || ''),
+      firstName: String(data.get('firstName') || ''),
+      lastName: String(data.get('lastName') || ''),
+      phone: String(data.get('phone') || ''),
+      address: String(data.get('address') || ''),
+      email: String(data.get('email') || ''),
+      interests,
+      message: String(data.get('message') || ''),
+      privacyAccepted: data.get('privacyAccepted') === 'on',
+      companyWebsite: String(data.get('companyWebsite') || ''),
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!response.ok) {
+        let code = 'send'
+        try {
+          const json = await response.json()
+          if (json && json.error === 'invalid') code = 'invalid'
+        } catch {
+          /* ignore */
+        }
+        throw new Error(code === 'invalid' ? errorInvalid : errorGeneric)
+      }
+      form.classList.add('hidden')
+      thanks.classList.remove('hidden')
+      thanks.focus()
+      thanks.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      form.reset()
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : errorGeneric
+      errorEl.classList.remove('hidden')
+    } finally {
+      submitBtn.disabled = false
+      submitBtn.textContent = submitLabel
+    }
+  })
+</script>

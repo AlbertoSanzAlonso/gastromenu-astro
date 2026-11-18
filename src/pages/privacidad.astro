@@ -1,0 +1,180 @@
+---
+import LegalIdentity from '@/components/legal/LegalIdentity.astro'
+import LegalShell from '@/components/legal/LegalShell.astro'
+import { company } from '@/data/contact'
+import { getMessages } from '@/i18n'
+
+const copy = getMessages('es').legal
+---
+
+<LegalShell
+  title={copy.privacyTitle}
+  heading={copy.privacyHeading}
+  accent={copy.privacyAccent}
+  description={copy.privacyDescription}
+  path="/privacidad"
+>
+  <section>
+    <h2>Responsable del tratamiento</h2>
+    <p>Los datos personales recogidos a través de {company.domain} se tratan por:</p>
+    <LegalIdentity locale="es" />
+    <p>
+      Puede ejercer sus derechos y plantear cualquier cuestión sobre privacidad en
+      <a href={`mailto:${company.email}`}>{company.email}</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Datos que tratamos</h2>
+    <p>
+      Tratamos los datos que usted nos facilita al escribirnos, llamarnos o enviar el formulario de
+      contacto:
+    </p>
+    <ul>
+      <li>Nombre y apellidos de la persona de contacto.</li>
+      <li>Teléfono y correo electrónico.</li>
+      <li>Nombre y tipo de establecimiento.</li>
+      <li>Dirección, si decide indicarla.</li>
+      <li>Productos o servicios de su interés y el mensaje de la consulta.</li>
+      <li>La constancia de que ha aceptado esta política.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Para qué los usamos</h2>
+    <ul>
+      <li>Atender su consulta y preparar el presupuesto del trabajo solicitado.</li>
+      <li>Gestionar la relación comercial y el encargo, si llega a formalizarse.</li>
+      <li>Mantener el contacto necesario sobre ese proyecto.</li>
+      <li>
+        Cumplir las obligaciones legales de conservación documental, fiscal y mercantil cuando exista
+        una relación contractual.
+      </li>
+    </ul>
+    <p>
+      No utilizamos estos datos para elaborar perfiles, ni los cedemos para publicidad de terceros. No
+      enviaremos comunicaciones comerciales ajenas a la consulta salvo que usted lo solicite o exista
+      otra base que lo permita.
+    </p>
+  </section>
+
+  <section>
+    <h2>Base jurídica</h2>
+    <p>El tratamiento se apoya en:</p>
+    <ul>
+      <li>
+        La aplicación de medidas precontractuales solicitadas por usted al pedir información o un
+        presupuesto (artículo 6.1.b del RGPD).
+      </li>
+      <li>La ejecución del contrato, cuando el encargo se formaliza.</li>
+      <li>
+        El cumplimiento de obligaciones legales de conservación, cuando resultan aplicables (artículo
+        6.1.c del RGPD).
+      </li>
+      <li>
+        Su consentimiento, recogido en la casilla del formulario antes de enviar la consulta
+        (artículo 6.1.a del RGPD). Puede retirarlo en cualquier momento, sin que ello afecte al
+        tratamiento previo.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Durante cuánto tiempo</h2>
+    <p>
+      Las consultas que no llegan a convertirse en un encargo se conservan durante un máximo de dos
+      años desde el último contacto, para poder retomar la conversación si usted vuelve a escribirnos.
+    </p>
+    <p>
+      Si existe una relación contractual, los datos se conservan mientras dure y, después, durante los
+      plazos de prescripción de las responsabilidades legales. En particular, la documentación
+      mercantil y contable puede conservarse hasta seis años.
+    </p>
+  </section>
+
+  <section>
+    <h2>Quién puede acceder</h2>
+    <p>
+      Los datos los utiliza el personal de {company.legalName} que atiende las consultas y los
+      encargos. No se venden ni se ceden a terceros para sus propios fines.
+    </p>
+    <p>
+      Para guardar las consultas del formulario recurrimos a un proveedor de base de datos (Supabase),
+      que actúa como encargado del tratamiento y solo trata los datos siguiendo nuestras
+      instrucciones. El alojamiento del sitio puede corresponder a un proveedor de infraestructura que
+      presta ese servicio.
+    </p>
+    <p>
+      Si nos contacta por WhatsApp, la conversación se canaliza a través de esa plataforma, que aplica
+      sus propias condiciones. El enlace de mapas abre un servicio de Google.
+    </p>
+  </section>
+
+  <section>
+    <h2>Transferencias internacionales</h2>
+    <p>
+      Procuramos que los encargados traten los datos en el Espacio Económico Europeo. Si un proveedor
+      accediera a los datos desde un país sin decisión de adecuación, la transferencia se amparará en
+      cláusulas contractuales tipo u otra garantía prevista en el RGPD.
+    </p>
+  </section>
+
+  <section>
+    <h2>Sus derechos</h2>
+    <p>Puede solicitar:</p>
+    <ul>
+      <li>Acceso a sus datos y a obtener una copia.</li>
+      <li>Rectificación de los datos inexactos.</li>
+      <li>Supresión, cuando ya no sean necesarios o retire el consentimiento.</li>
+      <li>Limitación u oposición al tratamiento, en los casos previstos por la ley.</li>
+      <li>
+        Portabilidad de los datos que nos haya facilitado y que tratemos por medios automatizados.
+      </li>
+    </ul>
+    <p>
+      Para ejercerlos, escriba a
+      <a href={`mailto:${company.email}`}>{company.email}</a> indicando el derecho que desea ejercer y
+      un medio para responderle. Podemos pedirle la información imprescindible para confirmar su
+      identidad.
+    </p>
+    <p>
+      Si considera que el tratamiento no se ajusta a la normativa, puede reclamar ante la Agencia
+      Española de Protección de Datos (
+      <a href="https://www.aepd.es" target="_blank" rel="noreferrer">www.aepd.es</a>).
+    </p>
+  </section>
+
+  <section>
+    <h2>Menores</h2>
+    <p>
+      Este sitio se dirige a profesionales de la hostelería y a personas adultas. No recabamos datos
+      de menores de forma consciente. Si detectamos que hemos recibido datos de un menor, los
+      eliminaremos.
+    </p>
+  </section>
+
+  <section id="cookies" class="scroll-mt-28">
+    <h2>Cookies</h2>
+    <p>
+      El sitio no utiliza cookies de análisis ni de publicidad. El prestador de alojamiento puede
+      emplear cookies o identificadores estrictamente técnicos, necesarios para la seguridad y el
+      funcionamiento de la página.
+    </p>
+    <p>
+      Puede configurar el navegador para bloquear o borrar las cookies. Si bloquea las estrictamente
+      necesarias, alguna función técnica puede dejar de estar disponible.
+    </p>
+  </section>
+
+  <section>
+    <h2>Cambios</h2>
+    <p>
+      Esta política puede actualizarse para reflejar cambios del sitio o de la normativa. La versión
+      vigente es la publicada en esta página, con la fecha indicada al inicio.
+    </p>
+    <p>
+      Más información sobre el titular y las condiciones de uso en el
+      <a href="/aviso-legal">aviso legal</a>.
+    </p>
+  </section>
+</LegalShell>

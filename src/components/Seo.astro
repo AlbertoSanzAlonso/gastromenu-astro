@@ -1,0 +1,86 @@
+---
+import {
+  buildJsonLd,
+  documentTitle,
+  OG_IMAGE,
+  pageUrl,
+  SITE_NAME,
+  SITE_URL,
+} from '@/lib/seo/site'
+import { localePath, type Locale } from '@/i18n/locale'
+
+interface Props {
+  title: string
+  description: string
+  path?: string
+  image?: string
+  type?: 'website' | 'article'
+  noindex?: boolean
+  locale?: Locale
+}
+
+const {
+  title,
+  description,
+  path = '/',
+  image = OG_IMAGE.src,
+  type = 'website',
+  noindex = false,
+  locale = 'es',
+} = Astro.props
+
+const fullTitle = documentTitle(title)
+const url = pageUrl(localePath(locale, path))
+const imageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`
+const robots = noindex
+  ? 'noindex, nofollow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+const jsonLd = buildJsonLd({
+  path: localePath(locale, path),
+  title: fullTitle,
+  crumb: title,
+  description,
+  locale,
+})
+const hrefEs = pageUrl(path)
+const hrefEn = pageUrl(localePath('en', path))
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<meta name="author" content="Fudys Gourmet SL" />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={url} />
+<link rel="alternate" hreflang="es" href={hrefEs} />
+<link rel="alternate" hreflang="en" href={hrefEn} />
+<link rel="alternate" hreflang="x-default" href={hrefEs} />
+<link rel="alternate" type="text/plain" title="llms.txt" href={`${SITE_URL}/llms.txt`} />
+<link rel="ai-catalog" type="application/json" href={`${SITE_URL}/.well-known/ai-catalog.json`} />
+<link rel="ard" type="application/json" href={`${SITE_URL}/.well-known/ard.json`} />
+<link
+  rel="api-catalog"
+  type="application/linkset+json"
+  href={`${SITE_URL}/.well-known/api-catalog`}
+/>
+<meta name="is-agentic-site-type" content="business" />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:locale" content={locale === 'en' ? 'en_GB' : 'es_ES'} />
+<meta property="og:locale:alternate" content={locale === 'en' ? 'es_ES' : 'en_GB'} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:type" content={OG_IMAGE.type} />
+<meta property="og:image:width" content={String(OG_IMAGE.width)} />
+<meta property="og:image:height" content={String(OG_IMAGE.height)} />
+<meta property="og:image:alt" content={OG_IMAGE.alt} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={OG_IMAGE.alt} />
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd).replaceAll('<', '\\u003c')} />

@@ -1,0 +1,46 @@
+export const company = {
+  legalName: 'Fudys Gourmet SL',
+  cif: 'B06899389',
+  brand: 'GastroMenu Premium',
+  domain: 'gastromenupremium.com',
+  url: 'https://www.gastromenupremium.com',
+  /** Correo general (info, legal, formularios). */
+  email: 'hola@gastromenupremium.com',
+  emails: [
+    { id: 'general', address: 'hola@gastromenupremium.com' },
+    { id: 'commercial', address: 'comercial@gastromenupremium.com' },
+    { id: 'design', address: 'produccion@gastromenupremium.com' },
+    { id: 'stands', address: 'talleres@gastromenupremium.com' },
+  ],
+  /** Domicilio social publicado en el Registro Mercantil. */
+  registeredAddress:
+    'Av. de los Botijos, s/n, bloque 5A, local 13, Edificio Alquibla, 29639 Benalmádena (Málaga)',
+  registry:
+    'Registro Mercantil de Málaga, tomo 6047, libro 4954, folio 13, sección 8, hoja 161726, inscripción 1',
+  legalUpdated: '19 de octubre de 2026',
+  hours: 'Lunes a viernes, de 09:00 a 15:00 h.',
+  callLabel: 'Llámenos',
+  callBody:
+    'O escríbanos para indicarnos sus necesidades. Nos pondremos en contacto lo antes posible.',
+  phones: [
+    { display: '605 989 264', tel: '+34605989264' },
+    { display: '952 058 319', tel: '+34952058319' },
+  ],
+  office: {
+    label: 'Oficina comercial',
+    street: 'Av. de los Botijos, 5-13',
+    city: '29639 Benalmádena Pueblo, Málaga',
+    maps: 'https://www.google.com/maps/search/?api=1&query=Av.+de+los+Botijos+5-13,+29639+Benalm%C3%A1dena',
+  },
+  workshops: {
+    label: 'Talleres e impresión',
+    places: ['Madrid', 'Málaga'],
+  },
+} as const
+
+export const socialLinks = [
+  { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/gastromenupremium/' },
+  { id: 'whatsapp', label: 'WhatsApp', href: 'https://wa.me/34605989264' },
+] as const
+
+export type SocialId = (typeof socialLinks)[number]['id']
