@@ -156,8 +156,10 @@ const prefix = locale === 'en' ? '/en' : ''
   const backdrop = document.getElementById('site-drawer-backdrop')
   if (!header || !toggle || !drawer) throw new Error('header missing')
 
+  const DRAWER_CLOSE_MS = 900
   let open = false
   let langsVisible = true
+  let navigating = false
 
   function setScrolled(scrolled) {
     header.setAttribute('data-scrolled', scrolled ? 'true' : 'false')
@@ -203,14 +205,42 @@ const prefix = locale === 'en' ? '/en' : ''
           langsVisible = true
           langs.classList.remove('max-md:pointer-events-none', 'max-md:opacity-0')
         }
-      }, 720)
+      }, DRAWER_CLOSE_MS)
     }
+  }
+
+  function shouldDelayNavigation(event, link) {
+    if (event.defaultPrevented) return false
+    if (event.button !== 0) return false
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false
+    if (link.target && link.target !== '_self') return false
+    const href = link.getAttribute('href')
+    if (!href || href.startsWith('mailto:') || href.startsWith('tel:')) return false
+    const url = new URL(href, window.location.href)
+    if (url.origin !== window.location.origin) return false
+    const sameDocument =
+      url.pathname === window.location.pathname && url.search === window.location.search
+    if (sameDocument) return false
+    return true
   }
 
   toggle.addEventListener('click', () => setOpen(!open))
   backdrop?.addEventListener('click', () => setOpen(false))
   drawer.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => setOpen(false))
+    link.addEventListener('click', (event) => {
+      if (!open || navigating) return
+      if (!shouldDelayNavigation(event, link)) {
+        setOpen(false)
+        return
+      }
+      event.preventDefault()
+      navigating = true
+      const href = link.href
+      setOpen(false)
+      window.setTimeout(() => {
+        window.location.assign(href)
+      }, DRAWER_CLOSE_MS)
+    })
   })
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && open) setOpen(false)
