@@ -163,18 +163,20 @@ const coverSrcSet = isCoverPhoto
       class="hidden max-w-5xl transition-transform duration-[900ms] ease-in-out lg:block lg:min-h-[24rem] lg:max-w-[50%] lg:translate-x-0 lg:text-left"
     >
       <div id="hero-copy-desktop">
-        <p class="slide-label mb-6 md:mb-8" data-hero-label>{slides[0].label}</p>
-        <h1
-          class="slide-heading mb-8 text-5xl !leading-[0.98] text-cream md:text-6xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6rem] whitespace-pre-line"
-          data-hero-title
-        >
-          {slides[0].title}
-        </h1>
-        <blockquote class="mb-8 max-w-2xl md:mb-10">
-          <p class="slide-body text-xl italic text-cream-muted md:text-2xl" data-hero-quote>
-            «{slides[0].quote}»
-          </p>
-        </blockquote>
+        <div data-hero-letters class="origin-left">
+          <p class="slide-label mb-6 md:mb-8" data-hero-label>{slides[0].label}</p>
+          <h1
+            class="slide-heading mb-8 text-5xl !leading-[0.98] text-cream md:text-6xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6rem] whitespace-pre-line"
+            data-hero-title
+          >
+            {slides[0].title}
+          </h1>
+          <blockquote class="mb-8 max-w-2xl md:mb-10">
+            <p class="slide-body text-xl italic text-cream-muted md:text-2xl" data-hero-quote>
+              «{slides[0].quote}»
+            </p>
+          </blockquote>
+        </div>
       </div>
     </div>
   </div>
@@ -230,34 +232,60 @@ const coverSrcSet = isCoverPhoto
     return index % 2 === 1
   }
 
+  function lettersNode(root) {
+    return root.querySelector('[data-hero-letters]') || root
+  }
+
   function setAlign(mirror) {
     copyWrap.classList.toggle('lg:text-right', mirror)
     copyWrap.classList.toggle('lg:text-left', !mirror)
+    const letters = lettersNode(copyDesktop)
+    letters.classList.toggle('origin-right', mirror)
+    letters.classList.toggle('origin-left', !mirror)
   }
 
-  function setCopy(root, slide, animate) {
+  function startLetterGrow(root) {
+    const letters = lettersNode(root)
+    if (!window.matchMedia('(min-width: 1024px)').matches) {
+      letters.classList.remove('hero-letters', 'hero-letters-grow')
+      letters.style.animationDuration = ''
+      return
+    }
+    const mirror = mirrored()
+    letters.classList.remove('hero-letters', 'hero-letters-grow')
+    letters.classList.toggle('origin-right', mirror)
+    letters.classList.toggle('origin-left', !mirror)
+    letters.style.animationDuration = `${INTERVAL}ms`
+    void letters.offsetWidth
+    letters.classList.add('hero-letters-grow')
+  }
+
+  function setCopy(root, slide, animate, { pulseLetters = false } = {}) {
     const label = root.querySelector('[data-hero-label]')
     const title = root.querySelector('[data-hero-title]')
     const quote = root.querySelector('[data-hero-quote]')
-    if (animate) {
-      root.classList.remove('hero-copy')
-      root.classList.add('hero-copy-out')
-      window.setTimeout(() => {
-        if (label) label.textContent = slide.label
-        if (title) title.textContent = slide.title
-        if (quote) quote.textContent = `«${slide.quote}»`
-        root.classList.remove('hero-copy-out')
-        void root.offsetWidth
-        root.classList.add('hero-copy')
-      }, Math.round(CROSSFADE * 0.4))
-    } else {
+    const fill = () => {
       if (label) label.textContent = slide.label
       if (title) title.textContent = slide.title
       if (quote) quote.textContent = `«${slide.quote}»`
     }
+    if (animate) {
+      root.classList.remove('hero-copy')
+      root.classList.add('hero-copy-out')
+      window.setTimeout(() => {
+        fill()
+        root.classList.remove('hero-copy-out')
+        void root.offsetWidth
+        root.classList.add('hero-copy')
+        if (pulseLetters) startLetterGrow(root)
+      }, Math.round(CROSSFADE * 0.4))
+    } else {
+      fill()
+      if (pulseLetters) startLetterGrow(root)
+    }
   }
 
-  function paint(animateCopy, animateSlides, { deferAlign = false } = {}) {
+  function paint(animateCopy, animateSlides, { deferAlign = false, pulseLetters = false } = {}) {
     const mirror = mirrored()
     media.classList.toggle('lg:translate-x-0', mirror)
     media.classList.toggle('lg:translate-x-full', !mirror)
@@ -311,7 +339,9 @@ const coverSrcSet = isCoverPhoto
     })
 
     setCopy(copyMobile, slides[index], animateCopy)
-    setCopy(copyDesktop, slides[index], animateCopy)
+    setCopy(copyDesktop, slides[index], animateCopy, {
+      pulseLetters: animateCopy || pulseLetters,
+    })
   }
 
   function go(next) {
@@ -359,7 +389,7 @@ const coverSrcSet = isCoverPhoto
     timer = window.setInterval(next, INTERVAL)
   }
 
-  paint(false, false)
+  paint(false, false, { pulseLetters: true })
   arm()
 
   stage.addEventListener('mouseenter', () => {
