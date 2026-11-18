@@ -24,8 +24,11 @@ const slides = buildHeroSlides(m.hero.slides).map((slide, index) =>
 )
 const HERO_TEXTURE = '/images/hero-texture.webp'
 const coverImage = slides[0]?.image ?? '/images/hero-ref-01.webp'
-const coverImageMobile =
-  coverImage === '/images/hero-ref-01.webp' ? '/images/hero-ref-01-800.webp' : coverImage
+const isCoverPhoto = coverImage === '/images/hero-ref-01.webp'
+const coverImageMobile = isCoverPhoto ? '/images/hero-ref-01-640.webp' : coverImage
+const coverSrcSet = isCoverPhoto
+  ? '/images/hero-ref-01-640.webp 640w, /images/hero-ref-01-800.webp 800w, /images/hero-ref-01.webp 1254w'
+  : undefined
 ---
 
 <section
@@ -85,15 +88,11 @@ const coverImageMobile =
         >
           <img
             src={position === 0 ? coverImageMobile : item.image}
-            srcset={
-              position === 0 && item.image === '/images/hero-ref-01.webp'
-                ? `${coverImageMobile} 800w, ${item.image} 1254w`
-                : undefined
-            }
+            srcset={position === 0 ? coverSrcSet : undefined}
             sizes={position === 0 ? '100vw' : undefined}
             alt=""
-            width={position === 0 ? 800 : 1448}
-            height={position === 0 ? 800 : 1086}
+            width={position === 0 ? 640 : 1448}
+            height={position === 0 ? 640 : 1086}
             data-hero-img
             class:list={[
               'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
@@ -204,12 +203,11 @@ const coverImageMobile =
   const edgeFadeRight = document.getElementById('hero-edge-fade-right')
   if (stage && media && copyMobile && copyDesktop && copyWrap) {
 
-  const CROSSFADE = 1100
+  const CROSSFADE = 1200
   const SWAP = 1600
   const INTERVAL = 5200
   let index = 0
   let leaving = null
-  let motionOn = false
   let timer = null
   let paused = false
 
@@ -248,7 +246,7 @@ const coverImageMobile =
     }
   }
 
-  function paint(animateCopy) {
+  function paint(animateCopy, animateSlides) {
     const mirror = mirrored()
     media.classList.toggle('lg:translate-x-0', mirror)
     media.classList.toggle('lg:translate-x-full', !mirror)
@@ -275,13 +273,19 @@ const coverImageMobile =
       const off = offset(position, index, slides.length)
       frame.style.setProperty('--hero-x', `${off * 6}%`)
       frame.style.zIndex = exiting ? '3' : active ? '2' : '1'
-      frame.style.opacity = active || exiting ? '' : '0'
-      frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
-      if (motionOn) {
+
+      if (animateSlides) {
+        frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
+        frame.style.opacity = active || exiting ? '' : '0'
+        void frame.offsetWidth
         if (active) frame.classList.add('hero-slide-in')
-        else if (exiting) frame.classList.add(position === 0 ? 'hero-slide-out' : 'hero-slide-out', ...(position === 0 ? ['lg:hero-slide-out-cover'] : []))
-      } else if (!active) {
-        frame.style.opacity = '0'
+        else if (exiting) {
+          frame.classList.add('hero-slide-out')
+          if (position === 0) frame.classList.add('lg:hero-slide-out-cover')
+        }
+      } else {
+        frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
+        frame.style.opacity = active ? '1' : '0'
       }
 
       const img = frame.querySelector('[data-hero-img]')
@@ -304,12 +308,11 @@ const coverImageMobile =
     if (slides.length < 2) return
     leaving = index
     index = (next + slides.length) % slides.length
-    motionOn = true
-    paint(true)
+    paint(true, true)
     const hold = window.matchMedia('(min-width: 1024px)').matches ? SWAP : CROSSFADE
     window.setTimeout(() => {
       leaving = null
-      paint(false)
+      paint(false, false)
     }, hold)
   }
 
@@ -323,7 +326,7 @@ const coverImageMobile =
     timer = window.setInterval(next, INTERVAL)
   }
 
-  paint(false)
+  paint(false, false)
   arm()
 
   stage.addEventListener('mouseenter', () => {

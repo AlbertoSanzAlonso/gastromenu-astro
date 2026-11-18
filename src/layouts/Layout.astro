@@ -1,4 +1,5 @@
 ---
+import { Font } from 'astro:assets'
 import '../styles/global.css'
 import CookieNotice from '@/components/CookieNotice.astro'
 import FloatingActions from '@/components/FloatingActions.astro'
@@ -20,8 +21,6 @@ interface Props {
 
 const { locale = 'es', path = '/', ...seo } = Astro.props
 const isHome = path === '/' || path === '/en'
-const fontsHref =
-  'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@400;500&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,300;0,400;0,500;1,400&display=swap'
 ---
 
 <!doctype html>
@@ -34,20 +33,18 @@ const fontsHref =
     <link rel="apple-touch-icon" href="/icono_gm_sin_fondo.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href={fontsHref} />
-    <link href={fontsHref} rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript>
-      <link href={fontsHref} rel="stylesheet" />
-    </noscript>
+    {/* Solo precarga Cinzel: marca del primer viewport; el resto no compite con el LCP de imagen */}
+    <Font cssVariable="--font-cinzel" preload />
+    <Font cssVariable="--font-playfair" />
+    <Font cssVariable="--font-montserrat" />
+    <Font cssVariable="--font-pinyon" />
     {
       isHome && (
         <link
           rel="preload"
           as="image"
-          href="/images/hero-ref-01-800.webp"
-          imagesrcset="/images/hero-ref-01-800.webp 800w, /images/hero-ref-01.webp 1254w"
+          href="/images/hero-ref-01-640.webp"
+          imagesrcset="/images/hero-ref-01-640.webp 640w, /images/hero-ref-01-800.webp 800w, /images/hero-ref-01.webp 1254w"
           imagesizes="100vw"
           fetchpriority="high"
         />

@@ -38,7 +38,11 @@ const description =
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4">
         {
           collections.map((item, index) => (
-            <a href={`${prefix}${item.href}`} class="block min-h-[240px] cursor-pointer">
+            <a
+              href={`${prefix}${item.href}`}
+              class="block min-h-[240px] cursor-pointer"
+              aria-label={m.home.collectionCards[index]?.title ?? item.label}
+            >
               <article class="group relative h-full w-full min-h-[220px] overflow-hidden bg-ink-muted transition-transform duration-600 ease-premium sm:min-h-[260px] lg:min-h-[340px]">
                 <div class="absolute inset-0">
                   <img
@@ -58,7 +62,7 @@ const description =
                   aria-hidden
                 />
                 <div class="pointer-events-none absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-8 lg:p-10">
-                  <h3 class="slide-heading text-2xl !text-gold-slide leading-tight sm:text-3xl md:text-4xl lg:text-[2.75rem]">
+                  <h3 class="slide-heading text-2xl !text-gold-slide leading-tight sm:text-3xl md:text-4xl lg:text-[2.75rem]" aria-hidden="true">
                     {m.home.collectionCards[index]?.title ?? item.label}
                   </h3>
                   <p class="mt-2 max-w-md font-label text-sm font-normal normal-case tracking-normal !text-gold-light leading-relaxed md:text-base">

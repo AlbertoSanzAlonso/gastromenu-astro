@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config'
+import { defineConfig, fontProviders } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -10,6 +10,41 @@ const root = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   site: 'https://www.gastromenupremium.com',
   trailingSlash: 'never',
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: 'Cinzel',
+      cssVariable: '--font-cinzel',
+      weights: [400, 600],
+      styles: ['normal'],
+      fallbacks: ['Times New Roman', 'Times', 'serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Playfair Display',
+      cssVariable: '--font-playfair',
+      // Google ya no sirve Playfair 300; 400 es la cara ligera real disponible.
+      weights: [400, 500],
+      styles: ['normal', 'italic'],
+      fallbacks: ['Georgia', 'Times New Roman', 'serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Montserrat',
+      cssVariable: '--font-montserrat',
+      weights: [400, 500],
+      styles: ['normal'],
+      fallbacks: ['system-ui', 'Segoe UI', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Pinyon Script',
+      cssVariable: '--font-pinyon',
+      weights: [400],
+      styles: ['normal'],
+      fallbacks: ['Segoe Script', 'Apple Chancery', 'cursive'],
+    },
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
