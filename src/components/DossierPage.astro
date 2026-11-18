@@ -1,8 +1,13 @@
 ---
 import ContactCTA from '@/components/ContactCTA.astro'
+import DossierGallery from '@/components/DossierGallery.astro'
+import ExpandableCopy from '@/components/ExpandableCopy.astro'
 import BrandDivider from '@/components/ui/BrandDivider.astro'
-import type { DossierPageContent } from '@/data/dossierTypes'
+import Section from '@/components/ui/Section.astro'
+import type { DossierPageContent, DossierSection } from '@/data/dossierTypes'
 import { dossierImageUrl } from '@/data/dossierTypes'
+import { company, socialLinks } from '@/data/contact'
+import { getMessages } from '@/i18n'
 import type { Locale } from '@/i18n/locale'
 import Layout from '@/layouts/Layout.astro'
 
@@ -11,93 +16,180 @@ interface Props {
   locale?: Locale
 }
 
-const { content, locale = 'es' } = Astro.props
-const hero = content.heroImages?.[0]
+const { content: page, locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const phone = company.phones[0]
+const landline = company.phones[1]
+const whatsapp = socialLinks.find((item) => item.id === 'whatsapp')
+
+const pageHeroWatermark: Record<string, string> = {
+  '/cartas': '/images/web/cartas/g-0012-orient-express.webp',
+  '/atriles': '/images/web/inicio/02-atriles-portamenu-premium-1620x945.webp',
+  '/manteles': '/images/web/inicio/03-manteles-premium-1620x945.webp',
+  '/exclusividades': '/images/web/inicio/04-exclusividades-premium-1620x945.webp',
+  '/nosotros': '/images/web/nosotros/nosotros-hero-las-tabas.webp',
+}
+
+function darkEdge(section?: DossierSection) {
+  return section?.variant === 'dark' && (section.images?.length ?? 0) > 0
+}
+
+function edgeBesideDark(previous?: DossierSection, next?: DossierSection) {
+  const top = darkEdge(previous)
+  const bottom = darkEdge(next)
+  if (top && bottom) return 'both' as const
+  if (top) return 'top' as const
+  if (bottom) return 'bottom' as const
+  return undefined
+}
+
+const heroWatermark = pageHeroWatermark[page.path]
 ---
 
 <Layout
-  title={content.seoTitle}
-  description={content.seoDescription}
-  path={content.path}
+  title={page.seoTitle}
+  description={page.seoDescription}
+  path={page.path}
   locale={locale}
 >
-  <section class="bg-ink text-cream">
-    <div class="container-premium py-12 md:py-16">
-      <p class="slide-label mb-6">{content.kicker}</p>
-      <h1 class="slide-heading max-w-4xl text-4xl text-cream md:text-6xl">
-        {content.title}
-        {content.emphasis && <span class="slide-accent"> {content.emphasis}</span>}
-      </h1>
-      <BrandDivider class="!mx-0 mt-8 mb-6 max-w-[8rem]" />
-      <p class="slide-body max-w-3xl text-lg text-cream-muted md:text-xl">{content.lead}</p>
-      {
-        hero && (
-          <div class="mt-10 overflow-hidden">
-            <img
-              src={dossierImageUrl(hero)}
-              alt={hero.caption}
-              class="aspect-[16/9] w-full max-w-4xl object-cover"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
-        )
-      }
+  <section class="relative overflow-hidden bg-ink text-cream">
+    {
+      heroWatermark && !page.heroImages?.length && (
+        <img
+          src={heroWatermark}
+          alt=""
+          aria-hidden
+          decoding="async"
+          class="dossier-hero-watermark"
+        />
+      )
+    }
+    <div class="container-premium relative z-[1] pt-12 pb-12 md:pt-16 md:pb-16">
+      <div
+        class:list={[
+          page.heroImages?.length && 'grid items-center gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20',
+        ]}
+      >
+        <div>
+          <p class="slide-label mb-6">{page.kicker}</p>
+          <h1 class="slide-heading max-w-4xl text-balance text-4xl text-cream md:text-6xl">
+            {page.title}{' '}
+            {page.emphasis && <span class="slide-accent">{page.emphasis}</span>}
+          </h1>
+          <BrandDivider class="!mx-0 mt-8 mb-6 max-w-[8rem]" />
+          <p class="slide-body max-w-3xl !text-cream-muted text-lg md:text-xl">{page.lead}</p>
+
+          {
+            page.sections.length > 1 && (
+              <nav aria-label={m.dossier.sections} class="mt-10 flex flex-wrap gap-3">
+                {page.sections.map((section) => (
+                  <a
+                    href={`#${section.id}`}
+                    class="slide-label whitespace-nowrap border border-gold-slide/35 px-4 py-2 text-cream/90 transition-colors duration-400 hover:border-gold-slide hover:text-gold-slide"
+                  >
+                    {section.nav}
+                  </a>
+                ))}
+              </nav>
+            )
+          }
+        </div>
+
+        {
+          page.heroImages && page.heroImages.length > 0 && (
+            <div class="[&_.slide-label]:text-cream/80">
+              <DossierGallery images={page.heroImages} locale={locale} />
+            </div>
+          )
+        }
+      </div>
     </div>
   </section>
 
   {
-    content.sections.map((section) => {
-      const image = section.images[0]
-      const dark = section.variant === 'dark'
+    page.sections.map((section, index) => {
+      const mirrored = index % 2 === 1
+      const hasImages = section.images.length > 0
+      const watermarkSrc = hasImages ? dossierImageUrl(section.images[0]) : undefined
+
       return (
-        <section
+        <Section
           id={section.id}
-          class:list={[
-            'section-padding relative overflow-hidden border-t border-white/5',
-            dark
-              ? 'bg-ink text-cream [&_.slide-heading]:text-cream [&_.slide-body]:text-cream-muted'
-              : section.variant === 'beige'
-                ? 'bg-beige-100/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone'
-                : 'bg-beige-50/65 text-ink [&_.slide-heading]:text-ink [&_.slide-body]:text-stone',
-          ]}
+          variant={section.variant}
+          ariaLabel={section.nav}
+          class="scroll-mt-24 md:scroll-mt-28"
+          watermarkSrc={watermarkSrc}
+          edgeFade={
+            section.variant === 'dark'
+              ? undefined
+              : edgeBesideDark(page.sections[index - 1], page.sections[index + 1])
+          }
         >
-          <div class="container-premium relative z-[2] grid gap-10 lg:grid-cols-2 lg:items-start">
-            <div>
+          <div
+            class:list={[hasImages && 'grid items-center gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-20']}
+          >
+            <header class:list={[mirrored && hasImages && 'lg:order-2 lg:text-right']}>
               <p class="slide-label mb-4">{section.kicker}</p>
-              <h2 class="slide-heading mb-6 text-3xl md:text-4xl">
-                {section.title}
-                {section.emphasis && <span class="slide-accent"> {section.emphasis}</span>}
+              <h2 class="slide-heading text-balance text-3xl md:text-4xl lg:text-5xl">
+                {section.title}{' '}
+                {section.emphasis && <span class="slide-accent">{section.emphasis}</span>}
               </h2>
-              <div class="space-y-4">
-                {section.paragraphs.map((paragraph) => (
-                  <p class="slide-body text-base md:text-lg">{paragraph}</p>
-                ))}
+
+              <ExpandableCopy
+                paragraphs={section.paragraphs}
+                highlights={section.highlights}
+                mirrored={mirrored && hasImages}
+                sectionId={section.id}
+                locale={locale}
+              />
+
+              <div class:list={['mt-8 flex flex-wrap gap-3', mirrored && hasImages && 'lg:justify-end']}>
+                <a
+                  href={`tel:${phone.tel}`}
+                  class="slide-label border border-gold-slide/70 px-4 py-2 text-[10px] transition-colors hover:bg-gold-slide hover:text-ink"
+                >
+                  {m.dossier.callNow} {phone.display}
+                </a>
+                {landline && (
+                  <a
+                    href={`tel:${landline.tel}`}
+                    class="slide-label border border-gold-slide/70 px-4 py-2 text-[10px] transition-colors hover:bg-gold-slide hover:text-ink"
+                  >
+                    {landline.display}
+                  </a>
+                )}
+                {whatsapp && (
+                  <a
+                    href={whatsapp.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="slide-label border border-gold-slide/70 px-4 py-2 text-[10px] transition-colors hover:bg-gold-slide hover:text-ink"
+                  >
+                    {m.dossier.whatsappNow}
+                  </a>
+                )}
               </div>
-              {section.highlights && section.highlights.length > 0 && (
-                <ul class="mt-8 space-y-2">
-                  {section.highlights.map((item) => (
-                    <li class="font-label text-sm tracking-wide text-gold-slide">— {item}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            {image && (
-              <div class="overflow-hidden bg-ink-muted">
-                <img
-                  src={dossierImageUrl(image)}
-                  alt={image.caption}
-                  class="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-premium hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                />
+            </header>
+
+            {hasImages && (
+              <div class:list={[mirrored && 'lg:order-1']}>
+                <DossierGallery images={section.images} locale={locale} />
               </div>
             )}
           </div>
-        </section>
+        </Section>
       )
     })
   }
 
-  <ContactCTA locale={locale} fadeTop />
+  <ContactCTA locale={locale} fadeTop={darkEdge(page.sections.at(-1))} />
 </Layout>
+
+<script>
+  const hash = window.location.hash.slice(1)
+  if (hash) {
+    requestAnimationFrame(() => {
+      document.getElementById(hash)?.scrollIntoView()
+    })
+  }
+</script>

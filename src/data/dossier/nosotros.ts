@@ -10,13 +10,6 @@ export const nosotrosPage: DossierPageContent = {
   emphasis: 'experiencia',
   lead:
     'Más de 28 años convirtiendo la presentación en parte de la experiencia. En GastroMenu Premium llevamos 28 años trabajando para restaurantes que entienden que cada detalle cuenta.',
-  heroImages: [
-    { file: 'g-0046-piel.webp', caption: 'Piel', src: '/images/web/cartas/g-0046-piel.webp' },
-    { file: 'g-0057-cervantes.webp', caption: 'Cervantes', src: '/images/web/cartas/g-0057-cervantes.webp' },
-    { file: 'g-0094-madera.webp', caption: 'Madera', src: '/images/web/cartas/g-0094-madera.webp' },
-    { file: 'g-0164-khan.webp', caption: 'Khan', src: '/images/web/cartas/g-0164-khan.webp' },
-    { file: 'g-0301-il-capitano.webp', caption: 'Il Capitano', src: '/images/web/cartas/g-0301-il-capitano.webp' },
-  ],
   sections: [
     {
       id: 'historia',

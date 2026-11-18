@@ -70,7 +70,7 @@ export const mantelesPage: DossierPageContent = {
       ],
       images: [
         { file: '03-mantel-informativo-el-encuentro-premium.webp', caption: 'El Encuentro', src: '/images/web/manteles/03-mantel-informativo-el-encuentro-premium.webp' },
-        { file: '60-mantel-marisqueria-plaza.webp', caption: 'Marisquería Plaza', src: '/images/web/manteles/60-mantel-marisqueria-plaza.webp' },
+        { file: '63-mantel-plaza-texto.webp', caption: 'Marisquería Plaza', src: '/images/web/manteles/63-mantel-plaza-texto.webp' },
         { file: '58-mantel-rocamar-nuevo.webp', caption: 'Rocamar', src: '/images/web/manteles/58-mantel-rocamar-nuevo.webp' },
         { file: '57-mantel-el-lotero.webp', caption: 'El Lotero', src: '/images/web/manteles/57-mantel-el-lotero.webp' },
         { file: '54-mantel-el-cateto.webp', caption: 'El Cateto', src: '/images/web/manteles/54-mantel-el-cateto.webp' },

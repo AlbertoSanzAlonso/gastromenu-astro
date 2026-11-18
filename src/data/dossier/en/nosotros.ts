@@ -9,7 +9,6 @@ export const nosotrosCopy: DossierCopy = {
   emphasis: 'experience',
   lead:
     'More than 28 years turning presentation into part of the experience. At GastroMenu Premium we have spent 28 years working for restaurants that know every detail counts.',
-  heroCaptions: ['Leather', 'Cervantes', 'Wood', 'Khan', 'Il Capitano'],
   sections: [
     {
       nav: 'History',

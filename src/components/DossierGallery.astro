@@ -1,0 +1,384 @@
+---
+import { dossierImageUrl, type DossierImage } from '@/data/dossierTypes'
+import { getMessages } from '@/i18n'
+import type { Locale } from '@/i18n/locale'
+
+interface Props {
+  images: DossierImage[]
+  locale?: Locale
+}
+
+const { images, locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const slides = images.map((image, index) => ({
+  id: `${image.file}-${index}`,
+  title: image.caption,
+  imageUrl: dossierImageUrl(image),
+}))
+const payload = JSON.stringify(slides)
+---
+
+{
+  images.length > 0 && (
+    <figure class="m-0" data-dossier-gallery data-slides={payload}>
+      <div class="group relative shadow-[0_22px_46px_-18px_rgb(0_0_0_/_0.55)]">
+        <button
+          type="button"
+          data-gallery-open
+          class="relative block w-full cursor-pointer border-0 bg-transparent p-0 text-left"
+          aria-label={images.length === 1 ? m.gallery.openOne : m.gallery.openMany(images.length)}
+        >
+          <span class="relative block aspect-[4/3] max-h-[32rem] w-full overflow-hidden bg-ink/90">
+            {slides.map((slide, index) => (
+              <span
+                aria-hidden
+                data-gallery-slide
+                class:list={[
+                  'absolute inset-0 transition-opacity ease-premium motion-reduce:transition-none',
+                  index === 0 ? 'z-[1] opacity-100' : 'z-0 opacity-0',
+                ]}
+                style="transition-duration: 700ms"
+              >
+                <img
+                  src={slide.imageUrl}
+                  alt=""
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  class="h-full w-full object-contain"
+                />
+              </span>
+            ))}
+          </span>
+        </button>
+
+        {
+          images.length > 1 && (
+            <>
+              <button
+                type="button"
+                data-gallery-prev
+                aria-label={m.gallery.previous}
+                class="absolute left-3 top-1/2 z-[2] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center border border-cream/40 bg-ink/55 text-xl text-cream transition-colors hover:border-gold-slide hover:text-gold-slide"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                data-gallery-next
+                aria-label={m.gallery.next}
+                class="absolute right-3 top-1/2 z-[2] flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center border border-cream/40 bg-ink/55 text-xl text-cream transition-colors hover:border-gold-slide hover:text-gold-slide"
+              >
+                ›
+              </button>
+            </>
+          )
+        }
+      </div>
+
+      <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+        <span class="slide-label text-[10px] md:text-xs" data-gallery-caption>
+          {slides[0]?.title}
+        </span>
+        {
+          images.length > 1 && (
+            <span class="slide-label shrink-0 text-[10px] tabular-nums opacity-80" data-gallery-counter>
+              1 / {images.length}
+            </span>
+          )
+        }
+      </figcaption>
+    </figure>
+  )
+}
+
+<script
+  define:vars={{
+    labels: {
+      dialog: m.gallery.dialog,
+      close: m.gallery.close,
+      closeGallery: m.gallery.closeGallery,
+      previous: m.gallery.previous,
+      next: m.gallery.next,
+      zoomIn: m.gallery.zoomIn,
+      zoomOut: m.gallery.zoomOut,
+      zoomHint: m.gallery.zoomHint,
+      zoomHintActive: m.gallery.zoomHintActive,
+    },
+  }}
+>
+  function bindGallery(root) {
+    if (root.dataset.bound === '1') return
+    root.dataset.bound = '1'
+
+    let slides = []
+    try {
+      slides = JSON.parse(root.dataset.slides || '[]')
+    } catch {
+      slides = []
+    }
+    if (!slides.length) return
+
+    const previewSlides = [...root.querySelectorAll('[data-gallery-slide]')]
+    const captionNode = root.querySelector('[data-gallery-caption]')
+    const counterNode = root.querySelector('[data-gallery-counter]')
+    let index = 0
+    let timer
+    let lightbox = null
+    let lightboxIndex = 0
+    let zoomed = false
+
+    function paintPreview() {
+      previewSlides.forEach((slide, i) => {
+        const active = i === index
+        slide.classList.toggle('opacity-100', active)
+        slide.classList.toggle('z-[1]', active)
+        slide.classList.toggle('opacity-0', !active)
+        slide.classList.toggle('z-0', !active)
+      })
+      if (captionNode && slides[index]) captionNode.textContent = slides[index].title
+      if (counterNode) counterNode.textContent = `${index + 1} / ${slides.length}`
+    }
+
+    function arm() {
+      window.clearInterval(timer)
+      if (slides.length < 2) return
+      if (lightbox) return
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      if (document.hidden) return
+      timer = window.setInterval(() => {
+        index = (index + 1) % slides.length
+        paintPreview()
+      }, 5200)
+    }
+
+    function stepPreview(delta, event) {
+      event?.preventDefault()
+      event?.stopPropagation()
+      if (slides.length < 2) return
+      index = (index + delta + slides.length) % slides.length
+      paintPreview()
+      arm()
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return
+      lightbox.remove()
+      lightbox = null
+      zoomed = false
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+      arm()
+    }
+
+    function setZoomed(next) {
+      if (!lightbox) return
+      zoomed = next
+
+      const shell = lightbox.querySelector('[data-lb-shell]')
+      const viewport = lightbox.querySelector('[data-lb-zoom]')
+      const img = lightbox.querySelector('[data-lb-image]')
+      const caption = lightbox.querySelector('[data-lb-caption]')
+      const hint = lightbox.querySelector('[data-lb-hint]')
+      const floatingHint = lightbox.querySelector('[data-lb-hint-float]')
+
+      lightbox.style.padding = zoomed ? '0.5rem' : ''
+
+      if (shell instanceof HTMLElement) {
+        shell.style.maxWidth = zoomed ? '100%' : ''
+        shell.style.width = zoomed ? '100%' : ''
+        shell.style.height = zoomed ? '100%' : ''
+        shell.style.paddingLeft = zoomed ? '0.5rem' : ''
+        shell.style.paddingRight = zoomed ? '0.5rem' : ''
+        shell.style.justifyContent = zoomed ? 'center' : ''
+        shell.style.overflow = 'visible'
+      }
+
+      if (viewport instanceof HTMLElement) {
+        viewport.setAttribute('aria-pressed', zoomed ? 'true' : 'false')
+        viewport.setAttribute('aria-label', zoomed ? labels.zoomOut : labels.zoomIn)
+        viewport.style.cursor = zoomed ? 'zoom-out' : 'zoom-in'
+        viewport.style.width = zoomed ? '100%' : ''
+        viewport.style.height = zoomed ? '100%' : ''
+        viewport.style.overflow = 'visible'
+      }
+
+      if (img instanceof HTMLImageElement) {
+        img.style.display = 'block'
+        img.style.width = 'auto'
+        img.style.height = 'auto'
+        img.style.objectFit = 'contain'
+        img.style.transition = 'max-height 280ms var(--ease-premium), max-width 280ms var(--ease-premium)'
+        if (zoomed) {
+          img.style.maxWidth = 'min(96vw, 100%)'
+          img.style.maxHeight = 'calc(100dvh - 2rem)'
+        } else {
+          img.style.maxWidth = '100%'
+          img.style.maxHeight = '68vh'
+        }
+      }
+
+      if (caption instanceof HTMLElement) {
+        caption.style.marginTop = zoomed ? '0' : ''
+        caption.style.height = zoomed ? '0' : ''
+        caption.style.overflow = zoomed ? 'hidden' : ''
+        caption.style.opacity = zoomed ? '0' : ''
+        caption.setAttribute('aria-hidden', zoomed ? 'true' : 'false')
+      }
+
+      if (hint) hint.textContent = zoomed ? labels.zoomHintActive : labels.zoomHint
+      if (floatingHint) floatingHint.hidden = !zoomed
+    }
+
+    function renderLightbox() {
+      const slide = slides[lightboxIndex]
+      if (!slide || !lightbox) return
+      const img = lightbox.querySelector('[data-lb-image]')
+      const watermark = lightbox.querySelector('[data-lb-watermark]')
+      const title = lightbox.querySelector('[data-lb-title]')
+      const counter = lightbox.querySelector('[data-lb-counter]')
+      const prev = lightbox.querySelector('[data-lb-prev]')
+      const next = lightbox.querySelector('[data-lb-next]')
+      if (img instanceof HTMLImageElement) {
+        img.src = slide.imageUrl
+        img.alt = slide.title
+      }
+      if (watermark instanceof HTMLImageElement) watermark.src = slide.imageUrl
+      if (title) title.textContent = slide.title
+      if (counter) counter.textContent = `${lightboxIndex + 1} / ${slides.length}`
+      if (prev instanceof HTMLButtonElement) prev.disabled = lightboxIndex <= 0
+      if (next instanceof HTMLButtonElement) next.disabled = lightboxIndex >= slides.length - 1
+      lightbox.setAttribute('aria-label', `${labels.dialog}: ${slide.title}`)
+      setZoomed(false)
+    }
+
+    function onKey(event) {
+      if (event.key === 'Escape') {
+        if (zoomed) {
+          setZoomed(false)
+          return
+        }
+        closeLightbox()
+      }
+      if (event.key === 'ArrowLeft') stepLightbox(-1)
+      if (event.key === 'ArrowRight') stepLightbox(1)
+    }
+
+    function stepLightbox(delta) {
+      const next = lightboxIndex + delta
+      if (next < 0 || next >= slides.length) return
+      lightboxIndex = next
+      index = lightboxIndex
+      paintPreview()
+      renderLightbox()
+    }
+
+    function bindZoom(viewport) {
+      viewport.addEventListener('click', (event) => {
+        event.stopPropagation()
+        setZoomed(!zoomed)
+      })
+
+      viewport.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        setZoomed(!zoomed)
+      })
+
+      viewport.addEventListener('contextmenu', (event) => event.preventDefault())
+
+      viewport.addEventListener(
+        'wheel',
+        (event) => {
+          if (event.deltaY < 0 && !zoomed) {
+            event.preventDefault()
+            setZoomed(true)
+            return
+          }
+          if (event.deltaY > 0 && zoomed) {
+            event.preventDefault()
+            setZoomed(false)
+          }
+        },
+        { passive: false },
+      )
+    }
+
+    function openLightbox(startIndex) {
+      lightboxIndex = startIndex
+      index = startIndex
+      paintPreview()
+      window.clearInterval(timer)
+
+      lightbox = document.createElement('div')
+      lightbox.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10'
+      lightbox.setAttribute('role', 'dialog')
+      lightbox.setAttribute('aria-modal', 'true')
+      lightbox.setAttribute('aria-label', `${labels.dialog}: ${slides[lightboxIndex].title}`)
+      lightbox.innerHTML = `
+        <div class="lightbox-backdrop" aria-hidden="true">
+          <img data-lb-watermark src="" alt="" class="lightbox-watermark" />
+          <div class="lightbox-watermark-veil"></div>
+        </div>
+        <button type="button" class="absolute inset-0 z-[1] cursor-default" data-lb-dismiss aria-label="${labels.closeGallery}"></button>
+        <button type="button" data-lb-close class="absolute top-4 right-4 md:top-6 md:right-6 z-20 font-brand text-sm md:text-base uppercase tracking-[0.25em] text-cream px-5 py-2.5 hover:text-gold-light hover:scale-105 transition-all duration-300 ease-premium cursor-pointer" aria-label="${labels.close}">
+          ${labels.close} ✕
+        </button>
+        <button type="button" data-lb-prev class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 group flex shrink-0 items-center justify-center h-14 w-14 md:h-16 md:w-16 text-cream text-3xl md:text-4xl font-light leading-none disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" aria-label="${labels.previous}">
+          <span class="block transition-all duration-300 ease-premium group-hover:scale-110 group-hover:text-gold-light" aria-hidden="true">‹</span>
+        </button>
+        <button type="button" data-lb-next class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 group flex shrink-0 items-center justify-center h-14 w-14 md:h-16 md:w-16 text-cream text-3xl md:text-4xl font-light leading-none disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" aria-label="${labels.next}">
+          <span class="block transition-all duration-300 ease-premium group-hover:scale-110 group-hover:text-gold-light" aria-hidden="true">›</span>
+        </button>
+        <div data-lb-shell class="relative z-10 flex w-full max-w-3xl flex-col items-center overflow-visible px-14 md:px-20">
+          <figure class="flex w-full flex-col items-center overflow-visible">
+            <div
+              data-lb-zoom
+              role="button"
+              tabindex="0"
+              aria-pressed="false"
+              aria-label="${labels.zoomIn}"
+              class="flex w-full touch-none items-center justify-center overflow-visible select-none outline-none cursor-zoom-in focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-gold-light"
+            >
+              <img data-lb-image src="" alt="" draggable="false" decoding="async" class="pointer-events-none mx-auto block h-auto w-auto max-h-[68vh] max-w-full object-contain md:max-h-[62vh]" />
+            </div>
+            <figcaption data-lb-caption class="mt-5 w-full max-w-2xl text-center md:mt-8">
+              <p data-lb-title class="font-brand text-lg md:text-2xl uppercase tracking-[0.18em] text-cream font-medium"></p>
+              <p data-lb-counter class="mt-6 inline-flex items-center justify-center min-w-[5rem] px-4 py-2 font-brand text-sm md:text-base uppercase tracking-[0.25em] text-cream tabular-nums"></p>
+              <p data-lb-hint class="mt-2 font-brand text-[10px] uppercase tracking-[0.16em] text-cream/55 md:text-xs md:tracking-[0.28em]">${labels.zoomHint}</p>
+            </figcaption>
+          </figure>
+          <p data-lb-hint-float hidden class="pointer-events-none fixed bottom-3 left-1/2 z-20 -translate-x-1/2 font-brand text-[10px] uppercase tracking-[0.16em] text-cream/70 md:text-xs md:tracking-[0.28em]">${labels.zoomHintActive}</p>
+        </div>
+      `
+
+      document.body.appendChild(lightbox)
+      document.body.style.overflow = 'hidden'
+      renderLightbox()
+
+      const zoomViewport = lightbox.querySelector('[data-lb-zoom]')
+      if (zoomViewport) bindZoom(zoomViewport)
+
+      lightbox.querySelector('[data-lb-dismiss]')?.addEventListener('click', closeLightbox)
+      lightbox.querySelector('[data-lb-close]')?.addEventListener('click', closeLightbox)
+      lightbox.querySelector('[data-lb-prev]')?.addEventListener('click', (event) => {
+        event.stopPropagation()
+        stepLightbox(-1)
+      })
+      lightbox.querySelector('[data-lb-next]')?.addEventListener('click', (event) => {
+        event.stopPropagation()
+        stepLightbox(1)
+      })
+      window.addEventListener('keydown', onKey)
+    }
+
+    root.querySelector('[data-gallery-prev]')?.addEventListener('click', (event) => stepPreview(-1, event))
+    root.querySelector('[data-gallery-next]')?.addEventListener('click', (event) => stepPreview(1, event))
+    root.querySelector('[data-gallery-open]')?.addEventListener('click', () => openLightbox(index))
+    document.addEventListener('visibilitychange', arm)
+
+    paintPreview()
+    arm()
+  }
+
+  document.querySelectorAll('[data-dossier-gallery]').forEach(bindGallery)
+</script>

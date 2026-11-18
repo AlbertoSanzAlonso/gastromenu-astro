@@ -1,0 +1,167 @@
+---
+import { getMessages } from '@/i18n'
+import type { Locale } from '@/i18n/locale'
+
+interface Props {
+  paragraphs: string[]
+  highlights?: string[]
+  mirrored?: boolean
+  sectionId: string
+  locale?: Locale
+}
+
+const { paragraphs, highlights = [], mirrored = false, sectionId, locale = 'es' } = Astro.props
+const m = getMessages(locale)
+const copyId = `copy-${sectionId}`
+
+function renderInline(text: string) {
+  const parts: Array<{ type: 'text' | 'bold'; value: string }> = []
+  const re = /\*\*([^*]+)\*\*/g
+  let last = 0
+  for (const match of text.matchAll(re)) {
+    const start = match.index ?? 0
+    if (start > last) parts.push({ type: 'text', value: text.slice(last, start) })
+    parts.push({ type: 'bold', value: match[1] })
+    last = start + match[0].length
+  }
+  if (last < text.length) parts.push({ type: 'text', value: text.slice(last) })
+  return parts
+}
+---
+
+<div
+  id={copyId}
+  class="dossier-copy mt-6 space-y-4"
+  data-expandable-copy
+  data-section-id={sectionId}
+  data-open="false"
+  data-truncated="false"
+  data-ready="false"
+  style="height: 11.5rem; overflow: hidden"
+>
+  {
+    paragraphs.map((paragraph) => (
+      <p class="slide-body">
+        {renderInline(paragraph).map((part) =>
+          part.type === 'bold' ? <strong class="font-bold">{part.value}</strong> : part.value,
+        )}
+      </p>
+    ))
+  }
+  {
+    highlights.length > 0 && (
+      <ul class="space-y-3 pt-4">
+        {highlights.map((item) => (
+          <li class:list={['slide-body flex gap-3 text-base', mirrored && 'lg:flex-row-reverse']}>
+            <span class="mt-[0.55rem] h-1.5 w-1.5 shrink-0 rotate-45 bg-gold-slide" aria-hidden />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</div>
+<button
+  type="button"
+  class="slide-label mt-6 inline-flex cursor-pointer items-center border border-gold-slide/35 px-4 py-2 transition-colors duration-400 hover:border-gold-slide"
+  data-expandable-toggle
+  data-controls={copyId}
+  data-more={m.dossier.more}
+  data-less={m.dossier.less}
+  aria-expanded="false"
+  aria-controls={copyId}
+  hidden
+>
+  {m.dossier.more}
+</button>
+
+<script>
+  const COLLAPSED = '11.5rem'
+  const ALIGN_MS = 700
+
+  function bindCopy(node) {
+    if (node.dataset.bound === '1') return
+    node.dataset.bound = '1'
+    const sectionId = node.dataset.sectionId || ''
+    const toggle = document.querySelector(
+      `[data-expandable-toggle][data-controls="${node.id}"]`,
+    )
+    if (!toggle) return
+
+    let open = false
+    let collapsed = 0
+    let overflows = false
+
+    function measure() {
+      const saved = node.style.height
+      node.style.height = COLLAPSED
+      collapsed = node.getBoundingClientRect().height
+      node.style.height = saved
+      overflows = node.scrollHeight > collapsed + 2
+      node.dataset.truncated = overflows ? 'true' : 'false'
+      node.style.height = open ? 'auto' : overflows ? `${collapsed}px` : 'auto'
+      toggle.hidden = !(overflows || open)
+      node.dataset.ready = 'true'
+    }
+
+    function align() {
+      if (!sectionId) return
+      document.getElementById(sectionId)?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    }
+
+    function setOpen(next) {
+      const closing = open && !next
+      open = next
+      node.dataset.open = open ? 'true' : 'false'
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+      toggle.textContent = open ? toggle.dataset.less || '' : toggle.dataset.more || ''
+
+      if (!overflows) {
+        node.style.height = 'auto'
+        return
+      }
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (reduced) {
+        node.style.height = open ? 'auto' : `${collapsed}px`
+        return
+      }
+
+      const from = node.getBoundingClientRect().height
+      const to = open ? node.scrollHeight : collapsed
+      node.style.height = `${from}px`
+      node.offsetHeight
+      node.style.height = `${to}px`
+
+      const onEnd = (event) => {
+        if (event.target !== node || event.propertyName !== 'height') return
+        if (node.dataset.open === 'true') node.style.height = 'auto'
+        node.removeEventListener('transitionend', onEnd)
+      }
+      node.addEventListener('transitionend', onEnd)
+
+      if (closing) {
+        requestAnimationFrame(() => {
+          const section = document.getElementById(sectionId)
+          if (section && section.getBoundingClientRect().top < 80) align()
+        })
+      } else {
+        requestAnimationFrame(align)
+        window.setTimeout(() => {
+          const section = document.getElementById(sectionId)
+          if (!section) return
+          const target = Number.parseFloat(getComputedStyle(section).scrollMarginTop) || 0
+          if (Math.abs(section.getBoundingClientRect().top - target) > 12) align()
+        }, ALIGN_MS)
+      }
+    }
+
+    measure()
+    toggle.addEventListener('click', () => setOpen(!open))
+    window.addEventListener('resize', () => {
+      if (!open) measure()
+    })
+  }
+
+  document.querySelectorAll('[data-expandable-copy]').forEach(bindCopy)
+</script>

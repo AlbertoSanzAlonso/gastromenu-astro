@@ -63,10 +63,15 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
     {
       slides.map((item, position) => (
         <div
-          class="hero-slide-frame absolute inset-0"
+          class:list={[
+            'hero-slide-frame absolute inset-0',
+            position === 0 &&
+              'lg:[mask-image:linear-gradient(to_right,transparent_0%,black_18%,black_100%)] lg:[-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_18%,black_100%)]',
+          ]}
           data-hero-frame
           data-index={position}
           data-fit={item.fit ?? 'cover'}
+          data-cover={position === 0 ? 'true' : 'false'}
           style={`opacity:${position === 0 ? '1' : '0'}; z-index:${position === 0 ? '2' : '1'}; --hero-x: ${position === 0 ? '0%' : `${position * 6}%`};`}
         >
           <img
@@ -82,9 +87,32 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
             loading={position === 0 ? 'eager' : 'lazy'}
             decoding="async"
           />
+          {
+            position === 0 && (
+              <div
+                class="pointer-events-none absolute inset-0 hidden lg:block"
+                style="background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 10%, transparent 22%)"
+                aria-hidden
+              />
+            )
+          }
         </div>
       ))
     }
+    <div
+      id="hero-edge-fade-left"
+      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[1600ms] ease-in-out lg:block opacity-100"
+      style="background: linear-gradient(to right, #000 0%, rgba(0,0,0,0.45) 24%, transparent 56%)"
+      aria-hidden
+    >
+    </div>
+    <div
+      id="hero-edge-fade-right"
+      class="pointer-events-none absolute inset-0 hidden transition-opacity duration-[1600ms] ease-in-out lg:block opacity-0"
+      style="background: linear-gradient(to left, #000 0%, rgba(0,0,0,0.45) 24%, transparent 56%)"
+      aria-hidden
+    >
+    </div>
   </div>
 
   <div
@@ -154,6 +182,8 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
   const copyWrap = document.getElementById('hero-copy-desktop-wrap')
   const texLeft = document.getElementById('hero-texture-left')
   const texRight = document.getElementById('hero-texture-right')
+  const edgeFadeLeft = document.getElementById('hero-edge-fade-left')
+  const edgeFadeRight = document.getElementById('hero-edge-fade-right')
   if (stage && media && copyMobile && copyDesktop && copyWrap) {
 
   const CROSSFADE = 1100
@@ -212,6 +242,12 @@ const HERO_TEXTURE = '/images/hero-texture.webp'
     if (texLeft && texRight) {
       texLeft.style.opacity = mirror ? '0' : '1'
       texRight.style.opacity = mirror ? '1' : '0'
+    }
+    if (edgeFadeLeft && edgeFadeRight) {
+      edgeFadeLeft.classList.toggle('opacity-100', !mirror)
+      edgeFadeLeft.classList.toggle('opacity-0', mirror)
+      edgeFadeRight.classList.toggle('opacity-100', mirror)
+      edgeFadeRight.classList.toggle('opacity-0', !mirror)
     }
 
     frames.forEach((frame, position) => {
