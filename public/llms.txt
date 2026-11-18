@@ -17,7 +17,8 @@ No uses este dominio como API de pedidos ni como servidor MCP: no hay endpoint r
 
 ## Descubrimiento para agentes
 
-- [Catálogo ARD](https://www.gastromenupremium.com/.well-known/ai-catalog.json): mismas entradas en [ard.json](https://www.gastromenupremium.com/.well-known/ard.json).
+- [ARD](https://www.gastromenupremium.com/.well-known/ard.json): fichas MCP/A2A y api-catalog (tipos de descubrimiento).
+- [AI Catalog](https://www.gastromenupremium.com/.well-known/ai-catalog.json): páginas HTML y documentación para agentes.
 - [api-catalog (RFC 9727)](https://www.gastromenupremium.com/.well-known/api-catalog): índice de recursos públicos (sin API REST remota).
 - [Ficha MCP](https://www.gastromenupremium.com/.well-known/mcp.json): no hay servidor MCP remoto.
 - [Ficha de agente](https://www.gastromenupremium.com/.well-known/agent.json): no hay endpoint JSON-RPC; la información está en estas páginas.

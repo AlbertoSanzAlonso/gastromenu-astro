@@ -2,7 +2,7 @@
   "specVersion": "1.0",
   "host": {
     "displayName": "GastroMenu Premium",
-    "identifier": "www.gastromenupremium.com",
+    "identifier": "did:web:www.gastromenupremium.com",
     "documentationUrl": "https://www.gastromenupremium.com/llms.txt"
   },
   "entries": [
