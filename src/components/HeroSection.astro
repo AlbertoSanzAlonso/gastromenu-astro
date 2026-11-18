@@ -205,12 +205,15 @@ const coverSrcSet = isCoverPhoto
 
   const CROSSFADE = 700
   const SWAP = 900
+  // Alinea cuando el copy ya ha desaparecido (~55% del fade-out).
+  const ALIGN_DELAY = Math.round(CROSSFADE * 0.55)
   const INTERVAL = 5000
   const START_DELAY = 1400
   let index = 0
   let leaving = null
   let timer = null
   let startTimer = null
+  let alignTimer = null
   let paused = false
   let started = false
 
@@ -316,8 +319,12 @@ const coverSrcSet = isCoverPhoto
     leaving = index
     index = (next + slides.length) % slides.length
     const desktop = window.matchMedia('(min-width: 1024px)').matches
-    // En desktop, la alineación del texto espera a que el bloque termine de cruzar.
+    // En desktop, la alineación espera a que el texto desaparezca (ni al inicio ni al final del cruce).
     paint(true, true, { deferAlign: desktop })
+    window.clearTimeout(alignTimer)
+    if (desktop) {
+      alignTimer = window.setTimeout(() => setAlign(mirrored()), ALIGN_DELAY)
+    }
     const hold = desktop ? SWAP : CROSSFADE
     window.setTimeout(() => {
       leaving = null
@@ -331,8 +338,10 @@ const coverSrcSet = isCoverPhoto
 
   function clearTimers() {
     window.clearTimeout(startTimer)
+    window.clearTimeout(alignTimer)
     window.clearInterval(timer)
     startTimer = null
+    alignTimer = null
     timer = null
   }
 
