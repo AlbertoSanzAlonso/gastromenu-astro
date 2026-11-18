@@ -909,8 +909,10 @@
 }
 
 @keyframes hero-fade-in {
-  0%,
-  48% {
+  0% {
+    opacity: 0;
+  }
+  35% {
     opacity: 0;
   }
   100% {
@@ -922,7 +924,7 @@
   0% {
     opacity: 1;
   }
-  40% {
+  55% {
     opacity: 0;
   }
   100% {
@@ -935,17 +937,36 @@
     opacity: 0.8;
   }
 
+  .hero-slide-frame {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 12%,
+      #000 78%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 12%,
+      #000 78%,
+      transparent 100%
+    );
+  }
+
   .hero-slide-in,
   .hero-copy {
     animation-name: hero-fade-in;
-    animation-timing-function: ease;
+    animation-duration: 1200ms;
+    animation-timing-function: ease-in-out;
   }
 
   .hero-slide-out,
   .hero-slide-out-cover,
   .hero-copy-out {
     animation-name: hero-fade-out;
-    animation-timing-function: ease;
+    animation-duration: 1200ms;
+    animation-timing-function: ease-in-out;
   }
 }
 
