@@ -87,6 +87,23 @@
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ],
+  "redirects": [
+    {
+      "source": "/condiciones",
+      "destination": "/condiciones-de-venta",
+      "permanent": true
+    },
+    {
+      "source": "/en/condiciones",
+      "destination": "/en/condiciones-de-venta",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/.well-known/api-catalog",
