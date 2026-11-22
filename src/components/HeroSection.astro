@@ -210,7 +210,7 @@ const coverSrcSet = isCoverPhoto
   // hero-copy-out llega a opacity 0 en el keyframe 55%.
   const COPY_SWAP_AT = Math.round(CROSSFADE * 0.55)
   // Misma cadencia para el primer slide y el resto.
-  const INTERVAL = 4000
+  const INTERVAL = 6000
   let index = 0
   let leaving = null
   let autoTimer = null
@@ -256,20 +256,23 @@ const coverSrcSet = isCoverPhoto
     if (quote) quote.textContent = `«${slide.quote}»`
   }
 
-  function startLetterGrow(root) {
+  function clearLetterMotion(root) {
     const letters = lettersNode(root)
-    if (!isDesktop()) {
-      letters.classList.remove('hero-letters', 'hero-letters-grow')
-      letters.style.animationDuration = ''
-      return
-    }
-    const mirror = mirrored()
     letters.classList.remove('hero-letters', 'hero-letters-grow')
+    letters.style.animationDuration = ''
+  }
+
+  // Zoom out leve en todas las diapositivas excepto la primera (cover).
+  function startLetterZoomOut(root) {
+    const letters = lettersNode(root)
+    clearLetterMotion(root)
+    if (!isDesktop() || index === 0) return
+    const mirror = mirrored()
     letters.classList.toggle('origin-right', mirror)
     letters.classList.toggle('origin-left', !mirror)
     letters.style.animationDuration = `${INTERVAL}ms`
     void letters.offsetWidth
-    letters.classList.add('hero-letters-grow')
+    letters.classList.add('hero-letters')
   }
 
   function fadeOutCopy(root) {
@@ -285,7 +288,8 @@ const coverSrcSet = isCoverPhoto
     root.classList.add('hero-copy')
     // Quitar el opacity inline después de arrancar el fade-in (si no, tapa la animación).
     root.style.opacity = ''
-    if (pulseLetters) startLetterGrow(root)
+    if (pulseLetters) startLetterZoomOut(root)
+    else clearLetterMotion(root)
   }
 
   function paintStage({ animateSlides = false } = {}) {
@@ -421,7 +425,7 @@ const coverSrcSet = isCoverPhoto
   setAlign(false)
   fillCopy(copyMobile, slides[0])
   fillCopy(copyDesktop, slides[0])
-  startLetterGrow(copyDesktop)
+  clearLetterMotion(copyDesktop)
   arm()
 
   // Solo pausa animaciones decorativas; el carrusel sigue su cadencia.
