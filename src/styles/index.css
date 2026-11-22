@@ -167,11 +167,11 @@
   }
 
   .section-watermark--footer {
-    right: 8%;
+    right: 0;
     bottom: -8%;
     width: min(78vw, 48rem);
     max-height: 32rem;
-    object-position: 70% bottom;
+    object-position: right bottom;
     opacity: 0.88;
     filter: brightness(0.96) saturate(1);
     -webkit-mask-image: linear-gradient(

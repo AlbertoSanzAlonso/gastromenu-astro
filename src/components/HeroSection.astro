@@ -209,16 +209,13 @@ const coverSrcSet = isCoverPhoto
   const SWAP = 900
   // hero-copy-out llega a opacity 0 en el keyframe 55%.
   const COPY_SWAP_AT = Math.round(CROSSFADE * 0.55)
-  const INTERVAL = 5000
-  const START_DELAY = 1400
+  // Misma cadencia para el primer slide y el resto.
+  const INTERVAL = 4000
   let index = 0
   let leaving = null
   let autoTimer = null
-  let startTimer = null
   let copyTimer = null
   let holdTimer = null
-  let paused = false
-  let started = false
   let busy = false
 
   function offset(position, current, total) {
@@ -362,15 +359,8 @@ const coverSrcSet = isCoverPhoto
   }
 
   function clearAutoTimers() {
-    window.clearTimeout(startTimer)
     window.clearTimeout(autoTimer)
-    startTimer = null
     autoTimer = null
-  }
-
-  function clearTimers() {
-    clearAutoTimers()
-    clearTransitionTimers()
   }
 
   function go(next) {
@@ -407,40 +397,24 @@ const coverSrcSet = isCoverPhoto
       busy = false
     }, hold)
 
-    // Cadencia fija desde el inicio del slide (no desde el fin del cruce).
-    if (!paused) {
-      autoTimer = window.setTimeout(() => {
-        autoTimer = null
-        if (!paused) next()
-      }, INTERVAL)
-    }
-  }
-
-  function next() {
-    go(index + 1)
-  }
-
-  function scheduleNext() {
-    clearAutoTimers()
-    if (paused || slides.length < 2 || busy) return
+    // Cadencia fija desde el inicio de cada slide.
     autoTimer = window.setTimeout(() => {
       autoTimer = null
       next()
     }, INTERVAL)
   }
 
+  function next() {
+    go(index + 1)
+  }
+
   function arm() {
     clearAutoTimers()
-    if (paused || slides.length < 2) return
-    if (!started) {
-      startTimer = window.setTimeout(() => {
-        started = true
-        startTimer = null
-        next()
-      }, START_DELAY)
-      return
-    }
-    if (!busy) scheduleNext()
+    if (slides.length < 2 || busy) return
+    autoTimer = window.setTimeout(() => {
+      autoTimer = null
+      next()
+    }, INTERVAL)
   }
 
   paintStage()
@@ -450,15 +424,12 @@ const coverSrcSet = isCoverPhoto
   startLetterGrow(copyDesktop)
   arm()
 
+  // Solo pausa animaciones decorativas; el carrusel sigue su cadencia.
   stage.addEventListener('mouseenter', () => {
-    paused = true
     stage.setAttribute('data-paused', 'true')
-    clearAutoTimers()
   })
   stage.addEventListener('mouseleave', () => {
-    paused = false
     stage.setAttribute('data-paused', 'false')
-    arm()
   })
 
   let touchX = 0
