@@ -39,24 +39,28 @@ const es = {
     discover: 'Descubrir colección',
     slides: [
       {
+        id: 'the-view',
         alt: 'Carta The View en azul, con el sol en oro y cantoneras doradas',
         label: 'Restaurant & Cocktail Bar',
         title: 'El nombre\nen oro',
         quote: 'Un sol dorado y cantoneras de oro para una carta que abre la mesa.',
       },
       {
+        id: 'amaretto',
         alt: 'Carta de cócteles Amaretto en piel marrón, con copa y marco dorado',
         label: 'Cartas de cócteles',
         title: 'La copa\nantes del brindis',
         quote: 'Piel, marco dorado y el nombre del cóctel, pensados para la barra.',
       },
       {
+        id: 'the-butcher',
         alt: 'Carta The Butcher en madera, con el nombre grabado y tornillos vistos',
         label: 'Impresión en madera',
         title: 'La madera\nse queda',
         quote: 'Veta, tornillos vistos y el nombre del local, grabados para la mesa.',
       },
       {
+        id: 'cervantes',
         alt: 'Carta de vinos Cervantes en piel negra, con cantoneras y tornillos de oro',
         label: 'Cartas de vino',
         title: 'La piel\nque recibe',
@@ -307,24 +311,28 @@ const en: typeof es = {
     discover: 'Discover the collection',
     slides: [
       {
+        id: 'the-view',
         alt: 'Blue The View menu, with a gold sun and gold corners',
         label: 'Restaurant & Cocktail Bar',
         title: 'The name\nin gold',
         quote: 'A gold sun and gold corners for a menu that opens the table.',
       },
       {
+        id: 'amaretto',
         alt: 'Amaretto cocktail menu in brown leather, with a glass and a gold frame',
         label: 'Cocktail menus',
         title: 'The glass\nbefore the toast',
         quote: 'Leather, a gold frame and the name of the cocktail, made for the bar.',
       },
       {
+        id: 'the-butcher',
         alt: 'The Butcher menu in wood, with the name engraved and visible screws',
         label: 'Printed on wood',
         title: 'The wood\nremains',
         quote: 'Grain, visible screws and the name of the house, engraved for the table.',
       },
       {
+        id: 'cervantes',
         alt: 'Cervantes wine list in black leather, with gold corners and screws',
         label: 'Wine lists',
         title: 'Leather\nthat welcomes',

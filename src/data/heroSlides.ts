@@ -38,6 +38,15 @@ export const mockHeroSlides: HeroSlide[] = [
     fit: 'contain',
   },
   {
+    id: 'the-butcher',
+    image: '/images/hero/03-the-butcher.webp',
+    alt: 'Carta The Butcher en madera, con el nombre grabado y tornillos vistos',
+    label: 'Impresión en madera',
+    title: 'La madera\nse queda',
+    quote: 'Veta, tornillos vistos y el nombre del local, grabados para la mesa.',
+    fit: 'contain',
+  },
+  {
     id: 'cervantes',
     image: '/images/hero/04-cervantes.webp',
     alt: 'Carta de vinos Cervantes en piel negra, con cantoneras y tornillos de oro',
@@ -48,11 +57,19 @@ export const mockHeroSlides: HeroSlide[] = [
   },
 ]
 
-export function buildHeroSlides(localeSlides: { alt: string; label: string; title: string; quote: string }[]) {
-  const extras = mockHeroSlides.map((slide, index) => ({
-    ...slide,
-    ...(localeSlides[index] ?? {}),
-  }))
+/** Diapositivas ocultas del carrusel hasta nuevo aviso. */
+export const hiddenHeroSlideIds = new Set(['the-butcher'])
+
+export function buildHeroSlides(
+  localeSlides: { id: string; alt: string; label: string; title: string; quote: string }[],
+) {
+  const byId = new Map(localeSlides.map((slide) => [slide.id, slide]))
+  const extras = mockHeroSlides
+    .filter((slide) => !hiddenHeroSlideIds.has(slide.id))
+    .map((slide) => ({
+      ...slide,
+      ...(byId.get(slide.id) ?? {}),
+    }))
   return [coverSlide, ...extras]
 }
 
