@@ -363,14 +363,14 @@ const coverSrcSet = isCoverPhoto
     autoTimer = null
   }
 
-  function go(next) {
+  function go(target) {
     if (slides.length < 2) return
     clearTransitionTimers()
     clearAutoTimers()
     busy = true
 
     leaving = index
-    index = (next + slides.length) % slides.length
+    index = (target + slides.length) % slides.length
     const desktop = isDesktop()
     const mirror = mirrored()
     const slide = slides[index]
@@ -400,11 +400,11 @@ const coverSrcSet = isCoverPhoto
     // Cadencia fija desde el inicio de cada slide.
     autoTimer = window.setTimeout(() => {
       autoTimer = null
-      next()
+      advance()
     }, INTERVAL)
   }
 
-  function next() {
+  function advance() {
     go(index + 1)
   }
 
@@ -413,7 +413,7 @@ const coverSrcSet = isCoverPhoto
     if (slides.length < 2 || busy) return
     autoTimer = window.setTimeout(() => {
       autoTimer = null
-      next()
+      advance()
     }, INTERVAL)
   }
 
