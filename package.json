@@ -17,5 +17,8 @@
     "astro": "^7.4.12",
     "tailwindcss": "^4.3.5"
   },
-  "description": "Clon SSG Astro de GastroMenu Premium (SEO)"
+  "description": "Clon SSG Astro de GastroMenu Premium (SEO)",
+  "devDependencies": {
+    "@types/node": "^26.6.6"
+  }
 }
