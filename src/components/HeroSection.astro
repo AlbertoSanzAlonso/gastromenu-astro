@@ -96,7 +96,7 @@ const coverSrcSet = isCoverPhoto
             data-hero-img
             class:list={[
               'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
-              item.fit === 'contain' ? 'hero-carta lg:object-contain' : 'lg:object-cover scale-[1.14]',
+              item.fit === 'contain' ? 'hero-carta lg:object-contain' : position === 0 ? 'hero-cover lg:object-contain' : 'lg:object-cover scale-[1.14]',
               position === 0 && item.fit !== 'contain' && 'hero-drift',
               position === 0 && item.fit === 'contain' && 'hero-float',
             ]}
@@ -334,8 +334,11 @@ const coverSrcSet = isCoverPhoto
 
       const img = frame.querySelector('[data-hero-img]')
       if (!img) return
+      const cover = frame.dataset.cover === 'true'
       img.classList.remove('hero-zoom-in', 'hero-zoom-out', 'hero-drift', 'hero-float', 'scale-[1.14]')
-      if (active || exiting) {
+      if (cover) {
+        img.classList.add('hero-drift')
+      } else if (active || exiting) {
         img.classList.add(position % 2 === 0 ? 'hero-zoom-in' : 'hero-zoom-out')
         if (slide.fit === 'contain') img.classList.add('hero-float')
         else img.classList.add('hero-drift')

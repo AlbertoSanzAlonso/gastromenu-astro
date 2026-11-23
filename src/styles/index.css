@@ -831,6 +831,15 @@
   animation-fill-mode: both;
 }
 
+@media (min-width: 1024px) {
+  .hero-cover {
+    object-fit: contain;
+    transform: scale(0.82);
+    transform-origin: center;
+    animation: none;
+  }
+}
+
 @keyframes hero-float {
   0%,
   100% {
