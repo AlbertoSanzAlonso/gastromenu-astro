@@ -43,9 +43,17 @@ const isHome = path === '/' || path === '/en'
         <link
           rel="preload"
           as="image"
+          href="/images/hero-mark.png"
+          media="(min-width: 1024px)"
+          fetchpriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
           href="/images/hero-ref-01-640.webp"
-          imagesrcset="/images/hero-ref-01-640.webp 640w, /images/hero-ref-01-800.webp 800w, /images/hero-ref-01.webp 1254w"
+          imagesrcset="/images/hero-ref-01-640.webp 640w, /images/hero-ref-01.webp 800w"
           imagesizes="100vw"
+          media="(max-width: 1023px)"
           fetchpriority="high"
         />
       )

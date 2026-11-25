@@ -23,11 +23,12 @@ const slides = buildHeroSlides(m.hero.slides).map((slide, index) =>
     : slide,
 )
 const HERO_TEXTURE = '/images/hero-texture.webp'
+const HERO_MARK = '/images/hero-mark.png'
 const coverImage = slides[0]?.image ?? '/images/hero-ref-01.webp'
 const isCoverPhoto = coverImage === '/images/hero-ref-01.webp'
 const coverImageMobile = isCoverPhoto ? '/images/hero-ref-01-640.webp' : coverImage
 const coverSrcSet = isCoverPhoto
-  ? '/images/hero-ref-01-640.webp 640w, /images/hero-ref-01-800.webp 800w, /images/hero-ref-01.webp 1254w'
+  ? '/images/hero-ref-01-640.webp 640w, /images/hero-ref-01.webp 800w'
   : undefined
 ---
 
@@ -75,41 +76,72 @@ const coverSrcSet = isCoverPhoto
     {
       slides.map((item, position) => (
         <div
-          class:list={[
-            'hero-slide-frame absolute inset-0',
-            position === 0 &&
-              'lg:[mask-image:linear-gradient(to_right,transparent_0%,black_18%,black_100%)] lg:[-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_18%,black_100%)]',
-          ]}
+          class="hero-slide-frame absolute inset-0"
           data-hero-frame
           data-index={position}
           data-fit={item.fit ?? 'cover'}
           data-cover={position === 0 ? 'true' : 'false'}
           style={`opacity:${position === 0 ? '1' : '0'}; z-index:${position === 0 ? '2' : '1'}; --hero-x: ${position === 0 ? '0%' : `${position * 6}%`};`}
         >
-          <img
-            src={position === 0 ? coverImageMobile : item.image}
-            srcset={position === 0 ? coverSrcSet : undefined}
-            sizes={position === 0 ? '100vw' : undefined}
-            alt=""
-            width={position === 0 ? 640 : 1448}
-            height={position === 0 ? 640 : 1086}
-            data-hero-img
-            class:list={[
-              'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
-              item.fit === 'contain' ? 'hero-carta lg:object-contain' : position === 0 ? 'hero-cover lg:object-contain' : 'lg:object-cover scale-[1.14]',
-              position === 0 && item.fit !== 'contain' && 'hero-drift',
-              position === 0 && item.fit === 'contain' && 'hero-float',
-            ]}
-            loading={position === 0 ? 'eager' : 'lazy'}
-            decoding={position === 0 ? 'sync' : 'async'}
-            fetchpriority={position === 0 ? 'high' : 'low'}
-          />
           {
             position === 0 && (
-              <div
-                class="pointer-events-none absolute inset-0 hidden lg:block"
-                style="background: linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 10%, transparent 22%)"
-                aria-hidden
+              <div class="pointer-events-none absolute inset-0 hidden scale-x-[-1] lg:block" aria-hidden>
+                <img
+                  src={HERO_TEXTURE}
+                  alt=""
+                  width="1024"
+                  height="1024"
+                  class="h-full w-full scale-x-[-1] object-cover object-right [mask-image:linear-gradient(to_left,black_0%,black_45%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_left,black_0%,black_45%,transparent_100%)]"
+                />
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+              </div>
+            )
+          }
+          {
+            position === 0 ? (
+              <img
+                src={HERO_MARK}
+                alt=""
+                width="1254"
+                height="1254"
+                class="hero-cover pointer-events-none absolute inset-0 z-[1] hidden h-full w-full lg:block"
+                loading="eager"
+                decoding="sync"
+                fetchpriority="high"
+              />
+            ) : (
+              <img
+                src={item.image}
+                alt=""
+                width={item.width ?? 1448}
+                height={item.height ?? 1700}
+                data-hero-img
+                class:list={[
+                  'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
+                  item.fit === 'contain' ? 'hero-carta lg:object-contain' : 'lg:object-cover scale-[1.14]',
+                  item.fit === 'contain' && 'hero-float',
+                ]}
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+              />
+            )
+          }
+          {
+            position === 0 && (
+              <img
+                src={coverImageMobile}
+                srcset={coverSrcSet}
+                sizes="100vw"
+                alt=""
+                width="640"
+                height="640"
+                data-hero-img
+                class="h-full w-full object-cover blur-[7px] lg:hidden hero-drift"
+                loading="eager"
+                decoding="sync"
+                fetchpriority="high"
               />
             )
           }
@@ -344,6 +376,13 @@ const coverSrcSet = isCoverPhoto
         else img.classList.add('hero-drift')
       } else if (slide.fit !== 'contain') {
         img.classList.add('scale-[1.14]')
+      }
+
+      const mark = frame.querySelector('.hero-cover')
+      if (mark && active) {
+        mark.style.animation = 'none'
+        void mark.offsetWidth
+        mark.style.animation = ''
       }
     })
   }

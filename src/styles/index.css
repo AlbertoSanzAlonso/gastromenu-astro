@@ -831,12 +831,20 @@
   animation-fill-mode: both;
 }
 
+@keyframes hero-cover-zoom {
+  from {
+    transform: scale(0.88);
+  }
+  to {
+    transform: scale(1.16);
+  }
+}
+
 @media (min-width: 1024px) {
   .hero-cover {
     object-fit: contain;
-    transform: scale(0.82);
     transform-origin: center;
-    animation: none;
+    animation: hero-cover-zoom 24s linear both;
   }
 }
 
@@ -1064,8 +1072,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-letters,
-  .hero-letters-grow {
+  .hero-letters-grow,
+  .hero-cover {
     animation: none;
+  }
+
+  .hero-cover {
+    transform: scale(0.92);
   }
 }
 

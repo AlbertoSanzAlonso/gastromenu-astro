@@ -6,6 +6,8 @@ export interface HeroSlide {
   title: string
   quote: string
   fit?: 'cover' | 'contain'
+  width?: number
+  height?: number
 }
 
 export const coverSlide: HeroSlide = {
@@ -20,45 +22,64 @@ export const coverSlide: HeroSlide = {
 
 export const mockHeroSlides: HeroSlide[] = [
   {
-    id: 'the-view',
-    image: '/images/hero/01-the-view.webp',
-    alt: 'Carta The View en azul, con el sol en oro y cantoneras doradas',
-    label: 'Restaurant & Cocktail Bar',
-    title: 'El nombre\nen oro',
-    quote: 'Un sol dorado y cantoneras de oro para una carta que abre la mesa.',
-    fit: 'contain',
-  },
-  {
     id: 'amaretto',
-    image: '/images/hero/02-amaretto.webp',
-    alt: 'Carta de cócteles Amaretto en piel marrón, con copa y marco dorado',
+    image: '/images/hero/01-amaretto.webp',
+    alt: 'Carta de cócteles Amaretto en piel marrón, con copa y cantoneras doradas',
     label: 'Cartas de cócteles',
     title: 'La copa\nantes del brindis',
     quote: 'Piel, marco dorado y el nombre del cóctel, pensados para la barra.',
     fit: 'contain',
+    width: 1122,
+    height: 1402,
   },
   {
-    id: 'the-butcher',
-    image: '/images/hero/03-the-butcher.webp',
-    alt: 'Carta The Butcher en madera, con el nombre grabado y tornillos vistos',
-    label: 'Impresión en madera',
-    title: 'La madera\nse queda',
-    quote: 'Veta, tornillos vistos y el nombre del local, grabados para la mesa.',
+    id: 'la-favorita',
+    image: '/images/hero/02-la-favorita.webp',
+    alt: 'Carta La Favorita en blanco, con lomo rojo, horno y el nombre de la pizzería',
+    label: 'Pizzería',
+    title: 'El horno\nen la portada',
+    quote: 'Lomo rojo, el horno y el nombre del local, pensados para la mesa.',
     fit: 'contain',
+    width: 1448,
+    height: 1700,
   },
   {
-    id: 'cervantes',
-    image: '/images/hero/04-cervantes.webp',
-    alt: 'Carta de vinos Cervantes en piel negra, con cantoneras y tornillos de oro',
-    label: 'Cartas de vino',
-    title: 'La piel\nque recibe',
-    quote: 'Tornillos vistos y cantoneras de oro para una carta que se recuerda en la mano.',
+    id: 'karnivoro',
+    image: '/images/hero/03-karnivoro.webp',
+    alt: 'Carta Karnívoro en piel negra, con el nombre en oro y cantoneras doradas',
+    label: 'Steak house',
+    title: 'El nombre\ngrabado',
+    quote: 'Piel negra, cantoneras de oro y el nombre del local, grabados para la mesa.',
     fit: 'contain',
+    width: 1448,
+    height: 1700,
+  },
+  {
+    id: 'inaki',
+    image: '/images/hero/04-inaki.webp',
+    alt: 'Carta Asador Iñaki en turquesa, con ilustración de mercado y lomo a juego',
+    label: 'Asadores',
+    title: 'El mercado\nen la tapa',
+    quote: 'Ilustración, lomo turquesa y el nombre del asador, pensados para la mesa.',
+    fit: 'contain',
+    width: 1448,
+    height: 1700,
+  },
+  {
+    id: 'rincon-playa',
+    image: '/images/hero/05-rincon-playa.webp',
+    alt: 'Carta Rincón de la Playa en blanco y azul, con pez, lomo azul y cantoneras plateadas',
+    label: 'Chiringuitos',
+    title: 'El pez\nque abre',
+    quote: 'Lomo azul, cantoneras de plata y el nombre del restaurante, pensados para la mesa.',
+    fit: 'contain',
+    width: 1448,
+    height: 1700,
   },
 ]
 
 /** Diapositivas ocultas del carrusel hasta nuevo aviso. */
-export const hiddenHeroSlideIds = new Set(['the-butcher'])
+export const hiddenHeroSlideIds = new Set<string>()
 
 export function buildHeroSlides(
   localeSlides: { id: string; alt: string; label: string; title: string; quote: string }[],
