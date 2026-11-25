@@ -953,7 +953,11 @@
 }
 
 @media (max-width: 1023px) {
-  .hero-slide-frame[data-cover='true'] {
+  .hero-carta {
+    opacity: 0.8;
+  }
+
+  .hero-slide-frame {
     -webkit-mask-image: linear-gradient(
       to bottom,
       transparent 0%,
