@@ -118,8 +118,10 @@ const coverSrcSet = isCoverPhoto
                 height={item.height ?? 1700}
                 data-hero-img
                 class:list={[
-                  'h-full w-full max-lg:object-cover max-lg:blur-[7px] lg:blur-none',
-                  item.fit === 'contain' ? 'hero-carta lg:object-contain' : 'lg:object-cover scale-[1.14]',
+                  'h-full w-full',
+                  item.fit === 'contain'
+                    ? 'hero-carta object-contain'
+                    : 'max-lg:object-cover max-lg:blur-[7px] lg:object-cover scale-[1.14]',
                   item.fit === 'contain' && 'hero-float',
                 ]}
                 loading="lazy"
@@ -336,10 +338,11 @@ const coverSrcSet = isCoverPhoto
       texRight.style.opacity = mirror ? '1' : '0'
     }
     if (edgeFadeLeft && edgeFadeRight) {
-      edgeFadeLeft.classList.toggle('opacity-100', !mirror)
-      edgeFadeLeft.classList.toggle('opacity-0', mirror)
-      edgeFadeRight.classList.toggle('opacity-100', mirror)
-      edgeFadeRight.classList.toggle('opacity-0', !mirror)
+      const fadeCover = index === 0
+      edgeFadeLeft.classList.toggle('opacity-100', fadeCover && !mirror)
+      edgeFadeLeft.classList.toggle('opacity-0', !fadeCover || mirror)
+      edgeFadeRight.classList.toggle('opacity-100', fadeCover && mirror)
+      edgeFadeRight.classList.toggle('opacity-0', !fadeCover || !mirror)
     }
 
     frames.forEach((frame, position) => {
