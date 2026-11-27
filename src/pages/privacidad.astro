@@ -3,6 +3,7 @@ import LegalIdentity from '@/components/legal/LegalIdentity.astro'
 import LegalShell from '@/components/legal/LegalShell.astro'
 import { company } from '@/data/contact'
 import { getMessages } from '@/i18n'
+import { analyticsEnabled } from '@/lib/analytics/google'
 
 const copy = getMessages('es').legal
 ---
@@ -13,6 +14,7 @@ const copy = getMessages('es').legal
   accent={copy.privacyAccent}
   description={copy.privacyDescription}
   path="/privacidad"
+  updated={analyticsEnabled ? 'Actualizado el 27 de noviembre de 2026' : undefined}
 >
   <section>
     <h2>Responsable del tratamiento</h2>
@@ -103,6 +105,15 @@ const copy = getMessages('es').legal
       que actúa como encargado del tratamiento y solo trata los datos siguiendo nuestras
       instrucciones. El alojamiento del sitio puede corresponder a un proveedor de infraestructura que
       presta ese servicio.
+      {
+        analyticsEnabled && (
+          <>
+            {' '}
+            Si acepta las cookies de análisis, Google Ireland Limited recibe los datos de la visita
+            para prestar Google Analytics, también como encargado y siguiendo nuestras instrucciones.
+          </>
+        )
+      }
     </p>
     <p>
       Si nos contacta por WhatsApp, la conversación se canaliza a través de esa plataforma, que aplica
@@ -155,11 +166,45 @@ const copy = getMessages('es').legal
 
   <section id="cookies" class="scroll-mt-28">
     <h2>Cookies</h2>
-    <p>
-      El sitio no utiliza cookies de análisis ni de publicidad. El prestador de alojamiento puede
-      emplear cookies o identificadores estrictamente técnicos, necesarios para la seguridad y el
-      funcionamiento de la página.
-    </p>
+    {
+      analyticsEnabled ? (
+        <>
+          <p>
+            El sitio utiliza cookies técnicas, necesarias para la seguridad y el funcionamiento de la
+            página. El prestador de alojamiento puede emplear identificadores estrictamente técnicos
+            con el mismo fin.
+          </p>
+          <p>
+            Si usted lo acepta en el aviso de cookies, medimos la visita con Google Analytics 4, a
+            través de la etiqueta de Google y de Google Tag Manager. Esa medición sirve para conocer,
+            de forma agregada, cómo se usa el sitio: páginas vistas, origen de la visita y tipo de
+            dispositivo. No la usamos para publicidad ni para elaborar un perfil comercial.
+          </p>
+          <p>
+            La base de ese tratamiento es su consentimiento (artículo 6.1.a del RGPD). Puede aceptarlo
+            o rechazarlo en el aviso, y retirarlo cuando quiera desde el enlace «Cookies» del pie de
+            página. Si lo rechaza, la página sigue funcionando igual y no se activan las cookies de
+            análisis. Los datos de la visita se conservan durante el plazo configurado en Google
+            Analytics, como máximo catorce meses, y no sirven para identificarle.
+          </p>
+          <p>
+            El servicio lo presta Google Ireland Limited, que puede tratar datos en Estados Unidos.
+            Esa transferencia se ampara en el Marco de Privacidad de Datos UE-EE. UU. y, en su caso,
+            en las cláusulas contractuales tipo. Más información en la{' '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
+              política de privacidad de Google
+            </a>
+            .
+          </p>
+        </>
+      ) : (
+        <p>
+          El sitio no utiliza cookies de análisis ni de publicidad. El prestador de alojamiento puede
+          emplear cookies o identificadores estrictamente técnicos, necesarios para la seguridad y el
+          funcionamiento de la página.
+        </p>
+      )
+    }
     <p>
       Puede configurar el navegador para bloquear o borrar las cookies. Si bloquea las estrictamente
       necesarias, alguna función técnica puede dejar de estar disponible.

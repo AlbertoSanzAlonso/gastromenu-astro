@@ -1,6 +1,7 @@
 ---
 import { FOOTER_WATERMARK_SRC } from '@/data/brand'
 import { getMessages } from '@/i18n'
+import { analyticsEnabled } from '@/lib/analytics/google'
 import type { Locale } from '@/i18n/locale'
 
 interface Props {
@@ -10,6 +11,11 @@ interface Props {
 const { locale = 'es' } = Astro.props
 const m = getMessages(locale)
 const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
+const body = analyticsEnabled ? m.cookies.analyticsBody : m.cookies.body
+const buttonClass =
+  'inline-flex max-w-full items-center justify-center border px-8 py-3 font-label text-sm font-medium uppercase tracking-[0.25em] transition-all duration-400 ease-premium hover:scale-[1.04] active:scale-[0.98] md:max-w-none'
+const acceptClass = `${buttonClass} border-ink bg-ink text-cream hover:border-gold-slide hover:bg-charcoal hover:shadow-lg hover:shadow-gold-slide/30`
+const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream hover:border-gold-slide hover:text-gold-highlight`
 ---
 
 <aside
@@ -45,7 +51,7 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
     class="container-premium cookie-notice-panel relative z-[2] flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
   >
     <p class="slide-body max-w-3xl text-sm">
-      {m.cookies.body}{' '}
+      {body}{' '}
       <a
         href={privacyHref}
         class="text-gold-slide underline underline-offset-4 transition-colors hover:text-gold-highlight"
@@ -53,47 +59,108 @@ const privacyHref = `${locale === 'en' ? '/en' : ''}/privacidad#cookies`
         {m.cookies.privacy}
       </a>.
     </p>
-    <button
-      type="button"
-      id="cookie-notice-accept"
-      class="inline-flex max-w-full items-center justify-center border border-ink bg-ink px-8 py-3 font-label text-sm font-medium uppercase tracking-[0.25em] text-cream transition-all duration-400 ease-premium hover:scale-[1.04] hover:border-gold-slide hover:bg-charcoal hover:shadow-lg hover:shadow-gold-slide/30 active:scale-[0.98] md:max-w-none"
-    >
-      {m.cookies.accept}
-    </button>
+    {
+      analyticsEnabled ? (
+        <div class="flex w-full shrink-0 flex-col gap-3 sm:w-auto sm:flex-row">
+          <button type="button" data-cookie-reject class:list={[rejectClass, 'w-full sm:w-auto']}>
+            {m.cookies.reject}
+          </button>
+          <button type="button" data-cookie-accept class:list={[acceptClass, 'w-full sm:w-auto']}>
+            {m.cookies.acceptAnalytics}
+          </button>
+        </div>
+      ) : (
+        <button type="button" data-cookie-technical class={acceptClass}>
+          {m.cookies.accept}
+        </button>
+      )
+    }
   </div>
 </aside>
 
-<script define:vars={{ watermarkSrc: FOOTER_WATERMARK_SRC }}>
+<script>
+  import { FOOTER_WATERMARK_SRC } from '@/data/brand'
+  import {
+    analyticsEnabled,
+    onCookieSettings,
+    readConsent,
+    trackPageView,
+    writeConsent,
+  } from '@/lib/analytics/google'
+
   const STORAGE_KEY = 'gastromenu.cookie-notice'
+  const EXIT_MS = 800
   const notice = document.getElementById('cookie-notice')
-  const accept = document.getElementById('cookie-notice-accept')
-  if (notice && accept) {
-    let stored = false
+
+  function shouldOpen() {
+    if (analyticsEnabled) return readConsent() === null
     try {
-      stored = localStorage.getItem(STORAGE_KEY) === '1'
+      return localStorage.getItem(STORAGE_KEY) !== '1'
     } catch {
-      stored = false
+      return true
     }
-    if (!stored) {
-      notice.querySelectorAll('[data-cookie-art]').forEach((img) => {
-        if (img instanceof HTMLImageElement) img.src = watermarkSrc
-      })
-      notice.hidden = false
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => notice.setAttribute('data-shown', 'true'))
-      })
+  }
+
+  function loadArt() {
+    if (!notice) return
+    notice.querySelectorAll('[data-cookie-art]').forEach((img) => {
+      if (img instanceof HTMLImageElement && !img.getAttribute('src')) img.src = FOOTER_WATERMARK_SRC
+    })
+  }
+
+  function open() {
+    if (!notice) return
+    loadArt()
+    notice.hidden = false
+    notice.removeAttribute('data-leaving')
+    notice.setAttribute('data-shown', 'false')
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => notice.setAttribute('data-shown', 'true'))
+    })
+  }
+
+  function close() {
+    if (!notice) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      notice.hidden = true
+      notice.setAttribute('data-shown', 'false')
+      return
     }
-    accept.addEventListener('click', () => {
+    notice.setAttribute('data-leaving', 'true')
+    notice.setAttribute('data-shown', 'false')
+    window.setTimeout(() => {
+      notice.hidden = true
+    }, EXIT_MS)
+  }
+
+  if (notice) {
+    if (shouldOpen()) open()
+
+    notice.querySelector('[data-cookie-technical]')?.addEventListener('click', () => {
       try {
         localStorage.setItem(STORAGE_KEY, '1')
       } catch {
         /* ignore */
       }
-      notice.setAttribute('data-leaving', 'true')
-      notice.setAttribute('data-shown', 'false')
-      window.setTimeout(() => {
-        notice.hidden = true
-      }, 800)
+      close()
+    })
+
+    notice.querySelector('[data-cookie-accept]')?.addEventListener('click', () => {
+      writeConsent('granted')
+      trackPageView(`${window.location.pathname}${window.location.search}`)
+      close()
+    })
+
+    notice.querySelector('[data-cookie-reject]')?.addEventListener('click', () => {
+      writeConsent('denied')
+      close()
+    })
+
+    onCookieSettings(open)
+    document.addEventListener('click', (event) => {
+      const target = event.target
+      if (!(target instanceof Element) || !target.closest('[data-cookie-settings]')) return
+      open()
     })
   }
 </script>

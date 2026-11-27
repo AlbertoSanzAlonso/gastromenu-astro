@@ -3,6 +3,7 @@ import LegalIdentity from '@/components/legal/LegalIdentity.astro'
 import LegalShell from '@/components/legal/LegalShell.astro'
 import { company } from '@/data/contact'
 import { getMessages } from '@/i18n'
+import { analyticsEnabled } from '@/lib/analytics/google'
 
 const copy = getMessages('en').legal
 ---
@@ -14,6 +15,7 @@ const copy = getMessages('en').legal
   description={copy.privacyDescription}
   path="/privacidad"
   locale="en"
+  updated={analyticsEnabled ? 'Updated on 27 November 2026' : undefined}
 >
 <section>
     <h2>Controller</h2>
@@ -87,6 +89,15 @@ const copy = getMessages('en').legal
           To store form enquiries we use a database provider (Supabase), which acts as processor and
           only handles the data on our instructions. Hosting of the site may sit with an
           infrastructure provider that supplies that service.
+          {
+            analyticsEnabled && (
+              <>
+                {' '}
+                If you accept analytics cookies, Google Ireland Limited receives the visit data in
+                order to provide Google Analytics, also as processor and on our instructions.
+              </>
+            )
+          }
         </p>
         <p>
           If you contact us on WhatsApp, the conversation runs through that platform, which applies
@@ -139,11 +150,44 @@ const copy = getMessages('en').legal
 
       <section id="cookies" class="scroll-mt-28">
     <h2>Cookies</h2>
-        <p>
-          The site does not use analytics or advertising cookies. The hosting provider may use cookies
-          or identifiers that are strictly technical, needed for the security and working of the page.
-          The private administration area stores the session in the browser of the person who enters it.
-        </p>
+        {
+          analyticsEnabled ? (
+            <>
+              <p>
+                The site uses technical cookies, needed for the security and working of the page. The
+                hosting provider may use identifiers that are strictly technical for the same purpose.
+              </p>
+              <p>
+                If you accept it in the cookie notice, we measure the visit with Google Analytics 4,
+                through the Google tag and Google Tag Manager. That measurement is used to understand,
+                in aggregate, how the site is used: pages viewed, where the visit comes from, and the
+                type of device. We do not use it for advertising or to build a commercial profile.
+              </p>
+              <p>
+                The basis for that processing is your consent (article 6.1.a of the GDPR). You may
+                accept or refuse it in the notice, and withdraw it whenever you wish from the “Cookies”
+                link in the footer. If you refuse, the page keeps working and analytics cookies are not
+                set. Visit data are kept for the period set in Google Analytics, at most fourteen
+                months, and are not used to identify you.
+              </p>
+              <p>
+                The service is provided by Google Ireland Limited, which may process data in the United
+                States. That transfer rests on the EU-US Data Privacy Framework and, where needed, on
+                standard contractual clauses. Further information is in{' '}
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
+                  Google’s privacy policy
+                </a>
+                .
+              </p>
+            </>
+          ) : (
+            <p>
+              The site does not use analytics or advertising cookies. The hosting provider may use
+              cookies or identifiers that are strictly technical, needed for the security and working
+              of the page.
+            </p>
+          )
+        }
         <p>
           You can set the browser to block or delete cookies. If you block those that are strictly
           necessary, some technical function may cease to be available.

@@ -3,6 +3,7 @@ import BrandDivider from '@/components/ui/BrandDivider.astro'
 import { BRAND_ICON_SRC, FOOTER_WATERMARK_SRC } from '@/data/brand'
 import { company, socialLinks } from '@/data/contact'
 import { getMessages } from '@/i18n'
+import { analyticsEnabled } from '@/lib/analytics/google'
 import type { Locale } from '@/i18n/locale'
 
 interface Props {
@@ -130,6 +131,20 @@ const [primary, secondary] = company.phones
         <a href={`${prefix}/privacidad`} class="transition-colors hover:text-gold-highlight"
           >{m.footer.privacy}</a
         >
+        {
+          analyticsEnabled && (
+            <>
+              <span class="mx-2 text-gold-slide/40">·</span>
+              <button
+                type="button"
+                data-cookie-settings
+                class="transition-colors hover:text-gold-highlight"
+              >
+                {m.footer.cookies}
+              </button>
+            </>
+          )
+        }
         <span class="mx-2 text-gold-slide/40">·</span>
         <a
           href={`${prefix}/condiciones-de-venta`}

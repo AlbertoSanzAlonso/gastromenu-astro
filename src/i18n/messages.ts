@@ -152,13 +152,18 @@ const es = {
     rights: 'Todos los derechos reservados.',
     legal: 'Aviso legal',
     privacy: 'Política de privacidad',
+    cookies: 'Cookies',
     terms: 'Condiciones de venta',
   },
   cookies: {
     label: 'Cookies',
     body: 'Este sitio solo utiliza cookies técnicas, necesarias para el funcionamiento y la seguridad de la página. No empleamos cookies de análisis ni de publicidad. Consulte la',
+    analyticsBody:
+      'Usamos cookies técnicas, necesarias para que la página funcione. Con su permiso, medimos las visitas con Google Analytics para conocer el uso del sitio. No usamos cookies de publicidad. Consulte la',
     privacy: 'política de privacidad',
     accept: 'Entendido',
+    acceptAnalytics: 'Aceptar',
+    reject: 'Solo necesarias',
   },
   actions: {
     whatsapp: 'Escribir por WhatsApp',
@@ -431,13 +436,18 @@ const en: typeof es = {
     rights: 'All rights reserved.',
     legal: 'Legal notice',
     privacy: 'Privacy policy',
+    cookies: 'Cookies',
     terms: 'Conditions of sale',
   },
   cookies: {
     label: 'Cookies',
     body: 'This site uses only technical cookies, required for the page to work and stay secure. We do not use analytics or advertising cookies. See the',
+    analyticsBody:
+      'We use technical cookies, required for the page to work. With your permission, we measure visits with Google Analytics to understand how the site is used. We do not use advertising cookies. See the',
     privacy: 'privacy policy',
     accept: 'Understood',
+    acceptAnalytics: 'Accept',
+    reject: 'Necessary only',
   },
   actions: {
     whatsapp: 'Message us on WhatsApp',

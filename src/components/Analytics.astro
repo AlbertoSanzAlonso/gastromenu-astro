@@ -1,0 +1,93 @@
+---
+import { gaMeasurementId, gtmId } from '@/lib/analytics/google'
+
+interface Props {
+  part: 'head' | 'body'
+}
+
+const { part } = Astro.props
+const enabled = Boolean(gaMeasurementId || gtmId) && !Astro.url.pathname.startsWith('/admin')
+---
+
+{
+  part === 'head' && enabled && (
+    <>
+      <script is:inline define:vars={{ gaMeasurementId, gtmId }}>
+        var consentKey = 'gastromenu.cookie-consent'
+        window.dataLayer = window.dataLayer || []
+        window.gtag = function gtag() {
+          window.dataLayer.push(arguments)
+        }
+        function consentState(value) {
+          var analytics = value === 'granted' ? 'granted' : 'denied'
+          return {
+            analytics_storage: analytics,
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            functionality_storage: 'denied',
+            personalization_storage: 'denied',
+          }
+        }
+        var stored = null
+        try {
+          var saved = localStorage.getItem(consentKey)
+          if (saved === 'granted' || saved === 'denied') stored = saved
+        } catch (error) {
+          stored = null
+        }
+        window.gtag(
+          'consent',
+          'default',
+          Object.assign({ security_storage: 'granted', wait_for_update: 500 }, consentState('denied')),
+        )
+        if (stored) window.gtag('consent', 'update', consentState(stored))
+        if (gaMeasurementId) {
+          window.gtag('js', new Date())
+          window.gtag('config', gaMeasurementId, { send_page_view: false })
+          if (stored === 'granted') {
+            window.gtag('event', 'page_view', {
+              page_path: location.pathname + location.search,
+              page_location: location.href,
+              page_title: document.title,
+              send_to: gaMeasurementId,
+            })
+          }
+        }
+        if (gtmId) {
+          window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' })
+          if (!gaMeasurementId && stored === 'granted') {
+            window.dataLayer.push({
+              event: 'virtual_page_view',
+              page_path: location.pathname + location.search,
+              page_location: location.href,
+              page_title: document.title,
+            })
+          }
+        }
+      </script>
+      {gaMeasurementId && (
+        <script
+          is:inline
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+        ></script>
+      )}
+      {gtmId && (
+        <script is:inline async src={`https://www.googletagmanager.com/gtm.js?id=${gtmId}`}></script>
+      )}
+    </>
+  )
+}
+
+{
+  part === 'body' && enabled && gtmId && (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"></iframe>
+    </noscript>
+  )
+}
