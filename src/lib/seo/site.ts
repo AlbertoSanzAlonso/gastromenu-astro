@@ -5,8 +5,8 @@ export const SITE_URL = company.url
 
 export const OG_IMAGE = {
   src: '/og-image.jpg',
-  width: 762,
-  height: 1024,
+  width: 1200,
+  height: 1200,
   type: 'image/jpeg',
   alt: 'Cartas artesanales GastroMenu Premium',
 } as const
@@ -303,7 +303,9 @@ export function buildJsonLd(input: {
     image: `${SITE_URL}${OG_IMAGE.src}`,
     logo: {
       '@type': 'ImageObject',
-      url: `${SITE_URL}/logo-mark.svg`,
+      url: `${SITE_URL}/icon-512.png`,
+      width: 512,
+      height: 512,
     },
     email: company.email,
     telephone: company.phones.map((phone) => phone.tel),
@@ -343,6 +345,7 @@ export function buildJsonLd(input: {
     '@id': WEBSITE_ID,
     url: `${SITE_URL}/`,
     name: SITE_NAME,
+    alternateName: 'GastroMenu',
     description: homeSeo.description,
     inLanguage: ['es', 'en'],
     publisher: { '@id': BUSINESS_ID },
