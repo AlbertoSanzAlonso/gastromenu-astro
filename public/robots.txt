@@ -2,10 +2,9 @@
 User-agent: *
 Disallow: /admin
 
-# Descubrimiento ARD (spec §5.1). Los crawlers ignoran directivas desconocidas.
-Agentmap: https://www.gastromenupremium.com/.well-known/ard.json
-
-# Recursos para IA (comentarios informativos)
+# Recursos para IA (comentarios informativos).
+# Search Console marca como error cualquier directiva que no conozca,
+# así que el catálogo ARD no se anuncia aquí: va en rel="ard" y en /.well-known/ard.json.
 # llms.txt: https://www.gastromenupremium.com/llms.txt
 # AI catalog: https://www.gastromenupremium.com/.well-known/ai-catalog.json
 # ARD: https://www.gastromenupremium.com/.well-known/ard.json
