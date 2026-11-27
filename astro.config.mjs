@@ -10,6 +10,10 @@ const root = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   site: 'https://www.gastromenupremium.com',
   trailingSlash: 'never',
+  build: {
+    // El CSS va en el HTML. Así el primer render no espera otra petición.
+    inlineStylesheets: 'always',
+  },
   fonts: [
     {
       provider: fontProviders.google(),

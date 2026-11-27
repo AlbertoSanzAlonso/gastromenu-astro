@@ -23,7 +23,7 @@ const slides = buildHeroSlides(m.hero.slides).map((slide, index) =>
     : slide,
 )
 const HERO_TEXTURE = '/images/hero-texture.webp'
-const HERO_MARK = '/images/hero-mark.png'
+const HERO_MARK = '/images/hero-mark.webp'
 const coverImage = slides[0]?.image ?? '/images/hero-ref-01.webp'
 const isCoverPhoto = coverImage === '/images/hero-ref-01.webp'
 const coverImageMobile = isCoverPhoto ? '/images/hero-ref-01-640.webp' : coverImage
@@ -380,7 +380,9 @@ const coverSrcSet = isCoverPhoto
       }
 
       const mark = frame.querySelector('.hero-cover')
-      if (mark && active) {
+      // En la carga la animación ya arranca desde el CSS. Reiniciarla aquí
+      // obliga a un reflow antes del primer render y no cambia el movimiento.
+      if (mark && active && animateSlides) {
         mark.style.animation = 'none'
         void mark.offsetWidth
         mark.style.animation = ''
