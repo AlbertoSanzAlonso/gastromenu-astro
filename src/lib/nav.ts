@@ -14,7 +14,7 @@ export const collections = [
     label: 'Cartas',
     image: '/images/web/inicio/01-cartas-menu-premium-1620x945.webp',
     srcSet:
-      '/images/web/inicio/01-cartas-menu-premium-1200.webp 1200w, /images/web/inicio/01-cartas-menu-premium-1620x945.webp 1620w',
+      '/images/web/inicio/01-cartas-menu-premium-800.webp 800w, /images/web/inicio/01-cartas-menu-premium-1200.webp 1200w, /images/web/inicio/01-cartas-menu-premium-1620x945.webp 1620w',
   },
   {
     href: '/atriles',
@@ -27,13 +27,13 @@ export const collections = [
     label: 'Manteles',
     image: '/images/web/inicio/03-manteles-premium-1620x945.webp',
     srcSet:
-      '/images/web/inicio/03-manteles-premium-1200.webp 1200w, /images/web/inicio/03-manteles-premium-1620x945.webp 1620w',
+      '/images/web/inicio/03-manteles-premium-800.webp 800w, /images/web/inicio/03-manteles-premium-1200.webp 1200w, /images/web/inicio/03-manteles-premium-1620x945.webp 1620w',
   },
   {
     href: '/exclusividades',
     label: 'Exclusividades',
     image: '/images/web/inicio/04-exclusividades-premium-1620x945.webp',
     srcSet:
-      '/images/web/inicio/04-exclusividades-premium-1200.webp 1200w, /images/web/inicio/04-exclusividades-premium-1620x945.webp 1620w',
+      '/images/web/inicio/04-exclusividades-premium-800.webp 800w, /images/web/inicio/04-exclusividades-premium-1200.webp 1200w, /images/web/inicio/04-exclusividades-premium-1620x945.webp 1620w',
   },
 ] as const

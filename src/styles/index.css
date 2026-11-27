@@ -119,6 +119,8 @@
 
   .brand-watermark img {
     width: min(95vw, 56rem);
+    height: auto;
+    aspect-ratio: 341 / 539;
     max-height: 88vh;
     object-fit: contain;
     opacity: 0.26;

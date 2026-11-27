@@ -30,7 +30,7 @@ function imagesFor(root: string, dirs: readonly string[]) {
     for (const name of fs.readdirSync(absolute).sort()) {
       if (!IMAGE_EXT.test(name)) continue
       // Copia responsive de la misma foto. No es otra imagen de la página.
-      if (/-1200\.webp$/i.test(name)) continue
+      if (/-(800|1200)\.webp$/i.test(name)) continue
       images.push({
         loc: `${SITE_URL}/${dir}/${name}`,
         title: imageTitle(name),

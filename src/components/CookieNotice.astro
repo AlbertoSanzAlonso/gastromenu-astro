@@ -1,5 +1,4 @@
 ---
-import { FOOTER_WATERMARK_SRC } from '@/data/brand'
 import { getMessages } from '@/i18n'
 import { analyticsEnabled } from '@/lib/analytics/google'
 import type { Locale } from '@/i18n/locale'
@@ -22,7 +21,8 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
   id="cookie-notice"
   class="cookie-notice"
   data-shown="false"
-  hidden
+  inert
+  aria-hidden="true"
   role="region"
   aria-label={m.cookies.label}
 >
@@ -30,8 +30,8 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
     <img
       data-cookie-art
       alt=""
-      width="1024"
-      height="1536"
+      width="720"
+      height="1080"
       decoding="async"
       fetchpriority="low"
       class="cookie-notice-watermark cookie-notice-watermark--soft"
@@ -39,8 +39,8 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
     <img
       data-cookie-art
       alt=""
-      width="1024"
-      height="1536"
+      width="720"
+      height="1080"
       decoding="async"
       fetchpriority="low"
       class="cookie-notice-watermark"
@@ -79,7 +79,7 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
 </aside>
 
 <script>
-  import { FOOTER_WATERMARK_SRC } from '@/data/brand'
+  import { COOKIE_NOTICE_ART_SRC } from '@/data/brand'
   import {
     analyticsEnabled,
     onCookieSettings,
@@ -104,14 +104,15 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
   function loadArt() {
     if (!notice) return
     notice.querySelectorAll('[data-cookie-art]').forEach((img) => {
-      if (img instanceof HTMLImageElement && !img.getAttribute('src')) img.src = FOOTER_WATERMARK_SRC
+      if (img instanceof HTMLImageElement && !img.getAttribute('src')) img.src = COOKIE_NOTICE_ART_SRC
     })
   }
 
   function open() {
     if (!notice) return
     loadArt()
-    notice.hidden = false
+    notice.removeAttribute('inert')
+    notice.removeAttribute('aria-hidden')
     notice.removeAttribute('data-leaving')
     notice.setAttribute('data-shown', 'false')
     requestAnimationFrame(() => {
@@ -121,15 +122,17 @@ const rejectClass = `${buttonClass} border-cream/35 bg-transparent text-cream ho
 
   function close() {
     if (!notice) return
+    notice.setAttribute('data-shown', 'false')
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      notice.hidden = true
-      notice.setAttribute('data-shown', 'false')
+      notice.setAttribute('inert', '')
+      notice.setAttribute('aria-hidden', 'true')
       return
     }
     notice.setAttribute('data-leaving', 'true')
-    notice.setAttribute('data-shown', 'false')
     window.setTimeout(() => {
-      notice.hidden = true
+      notice.setAttribute('inert', '')
+      notice.setAttribute('aria-hidden', 'true')
+      notice.removeAttribute('data-leaving')
     }, EXIT_MS)
   }
 

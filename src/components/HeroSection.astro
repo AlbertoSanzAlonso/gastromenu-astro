@@ -113,6 +113,8 @@ const coverSrcSet = isCoverPhoto
             ) : (
               <img
                 src={item.image}
+                srcset={`/images/hero/m/${item.image.split('/').pop()} 800w, ${item.image} ${item.width ?? 1448}w`}
+                sizes="100vw"
                 alt=""
                 width={item.width ?? 1448}
                 height={item.height ?? 1700}
