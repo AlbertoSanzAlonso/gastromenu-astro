@@ -106,14 +106,14 @@ const coverSrcSet = isCoverPhoto
                 width="1254"
                 height="1254"
                 class="hero-cover pointer-events-none absolute inset-0 z-[1] hidden h-full w-full lg:block"
-                loading="eager"
-                decoding="sync"
-                fetchpriority="high"
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
               />
             ) : (
               <img
-                src={item.image}
-                srcset={`/images/hero/m/${item.image.split('/').pop()} 800w, ${item.image} ${item.width ?? 1448}w`}
+                data-hero-src={item.image}
+                data-hero-srcset={`/images/hero/m/${item.image.split('/').pop()} 800w, ${item.image} ${item.width ?? 1448}w`}
                 sizes="100vw"
                 alt=""
                 width={item.width ?? 1448}
@@ -124,7 +124,6 @@ const coverSrcSet = isCoverPhoto
                   item.fit === 'contain' ? 'hero-carta lg:object-contain' : 'lg:object-cover scale-[1.14]',
                   item.fit === 'contain' && 'hero-float',
                 ]}
-                loading="lazy"
                 decoding="async"
                 fetchpriority="low"
               />
@@ -142,7 +141,7 @@ const coverSrcSet = isCoverPhoto
                 data-hero-img
                 class="h-full w-full object-cover blur-[7px] lg:hidden hero-drift"
                 loading="eager"
-                decoding="sync"
+                decoding="async"
                 fetchpriority="high"
               />
             )
@@ -305,8 +304,9 @@ const coverSrcSet = isCoverPhoto
     letters.classList.toggle('origin-right', mirror)
     letters.classList.toggle('origin-left', !mirror)
     letters.style.animationDuration = `${INTERVAL}ms`
-    void letters.offsetWidth
-    letters.classList.add('hero-letters')
+    requestAnimationFrame(() => {
+      letters.classList.add('hero-letters')
+    })
   }
 
   function fadeOutCopy(root) {
@@ -318,10 +318,11 @@ const coverSrcSet = isCoverPhoto
   function fadeInCopy(root, slide, { pulseLetters = false } = {}) {
     fillCopy(root, slide)
     root.classList.remove('hero-copy-out')
-    void root.offsetWidth
-    root.classList.add('hero-copy')
-    // Quitar el opacity inline después de arrancar el fade-in (si no, tapa la animación).
-    root.style.opacity = ''
+    requestAnimationFrame(() => {
+      root.classList.add('hero-copy')
+      // Quitar el opacity inline después de arrancar el fade-in (si no, tapa la animación).
+      root.style.opacity = ''
+    })
     if (pulseLetters) startLetterZoomOut(root)
     else clearLetterMotion(root)
   }
@@ -355,13 +356,21 @@ const coverSrcSet = isCoverPhoto
 
       if (animateSlides) {
         frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
-        frame.style.opacity = active || exiting ? '' : '0'
-        void frame.offsetWidth
-        if (active) frame.classList.add('hero-slide-in')
-        else if (exiting) {
-          frame.classList.add('hero-slide-out')
-          if (position === 0) frame.classList.add('lg:hero-slide-out-cover')
-        }
+        // La que entra se queda a 0 hasta que arranca el fundido. Si no, se vería un fotograma entero.
+        if (!exiting) frame.style.opacity = '0'
+        const enter = active
+        const leave = exiting
+        const fromCover = position === 0
+        requestAnimationFrame(() => {
+          if (enter) {
+            frame.style.opacity = ''
+            frame.classList.add('hero-slide-in')
+          } else if (leave) {
+            frame.style.opacity = ''
+            frame.classList.add('hero-slide-out')
+            if (fromCover) frame.classList.add('lg:hero-slide-out-cover')
+          }
+        })
       } else {
         frame.classList.remove('hero-slide-in', 'hero-slide-out', 'hero-slide-out-cover')
         frame.style.opacity = active ? '1' : '0'
@@ -369,25 +378,30 @@ const coverSrcSet = isCoverPhoto
 
       const img = frame.querySelector('[data-hero-img]')
       if (!img) return
+      // En la carga las clases ya vienen del HTML. Tocarlas reinicia el drift
+      // de la foto principal y retrasa su primer pintado.
+      if (!animateSlides) return
       const cover = frame.dataset.cover === 'true'
+      const zoomIn = position % 2 === 0
+      const contain = slide.fit === 'contain'
       img.classList.remove('hero-zoom-in', 'hero-zoom-out', 'hero-drift', 'hero-float', 'scale-[1.14]')
-      if (cover) {
-        img.classList.add('hero-drift')
-      } else if (active || exiting) {
-        img.classList.add(position % 2 === 0 ? 'hero-zoom-in' : 'hero-zoom-out')
-        if (slide.fit === 'contain') img.classList.add('hero-float')
-        else img.classList.add('hero-drift')
-      } else if (slide.fit !== 'contain') {
-        img.classList.add('scale-[1.14]')
-      }
+      requestAnimationFrame(() => {
+        if (cover) {
+          img.classList.add('hero-drift')
+        } else if (active || exiting) {
+          img.classList.add(zoomIn ? 'hero-zoom-in' : 'hero-zoom-out')
+          img.classList.add(contain ? 'hero-float' : 'hero-drift')
+        } else if (!contain) {
+          img.classList.add('scale-[1.14]')
+        }
+      })
 
       const mark = frame.querySelector('.hero-cover')
-      // En la carga la animación ya arranca desde el CSS. Reiniciarla aquí
-      // obliga a un reflow antes del primer render y no cambia el movimiento.
-      if (mark && active && animateSlides) {
+      if (mark && active) {
         mark.style.animation = 'none'
-        void mark.offsetWidth
-        mark.style.animation = ''
+        requestAnimationFrame(() => {
+          mark.style.animation = ''
+        })
       }
     })
   }
@@ -474,6 +488,17 @@ const coverSrcSet = isCoverPhoto
   fillCopy(copyDesktop, slides[0])
   clearLetterMotion(copyDesktop)
   arm()
+  // Las demás cartas esperan al primer pintado para no competir con la foto de portada.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('[data-hero-src]').forEach((node) => {
+        if (!(node instanceof HTMLImageElement) || node.getAttribute('src')) return
+        const srcset = node.dataset.heroSrcset
+        if (srcset) node.srcset = srcset
+        if (node.dataset.heroSrc) node.src = node.dataset.heroSrc
+      })
+    })
+  })
 
   // Solo pausa animaciones decorativas; el carrusel sigue su cadencia.
   stage.addEventListener('mouseenter', () => {
